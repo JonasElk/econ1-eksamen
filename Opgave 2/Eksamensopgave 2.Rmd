@@ -1,0 +1,27 @@
+---
+output: 
+  pdf_document:
+    keep_tex: true
+header-includes:
+    - \usepackage{setspace}\onehalfspacing
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(tinytex)
+library(dplyr)
+library(hrbrthemes)
+library(viridis)
+library(zoo)
+library(stringr)
+library(ggrepel)
+library(pander)
+options(digits = 2)
+options(scipen = 999)
+rm(list=ls())
+```
+
+# Eksamenssæt 2
