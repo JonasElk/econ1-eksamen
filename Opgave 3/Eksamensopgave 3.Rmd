@@ -24,4 +24,9 @@ options(scipen = 999)
 rm(list=ls())
 ```
 
+```{r, echo = F, include=F}
+dat = read.csv("data3.csv")
+```
+
+
 # Eksamenssæt 3
