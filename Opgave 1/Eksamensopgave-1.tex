@@ -1,0 +1,112 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace}\onehalfspacing
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\hypertarget{eksamenssuxe6t-1}{%
+\section{Eksamenssæt 1}\label{eksamenssuxe6t-1}}
+
+\hypertarget{opgave-1---estimer-modellen-vha.-ols.-kommenter-puxe5-outputtet-og-fortolk-resultaterne}{%
+\subsection{Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet
+og fortolk
+resultaterne}\label{opgave-1---estimer-modellen-vha.-ols.-kommenter-puxe5-outputtet-og-fortolk-resultaterne}}
+
+\hypertarget{opgave-2---udfuxf8r-grafisk-modelkontrol}{%
+\subsection{Opgave 2 - Udfør grafisk
+modelkontrol}\label{opgave-2---udfuxf8r-grafisk-modelkontrol}}
+
+\hypertarget{opgave-3---test-for-heteroskedasticitet-vha.-breusch-pagan-testet-og-specialudgaven-af-white-testet}{%
+\subsection{Opgave 3 - Test for heteroskedasticitet vha.
+Breusch-Pagan-testet og specialudgaven af
+White-testet}\label{opgave-3---test-for-heteroskedasticitet-vha.-breusch-pagan-testet-og-specialudgaven-af-white-testet}}
+
+\hypertarget{opgave-4---beregn-robuste-standardfejl-for-modellen-og-sammenlign-med-resultaterne-i-spuxf8rgsmuxe5l-1}{%
+\subsection{Opgave 4 - Beregn robuste standardfejl for modellen og
+sammenlign med resultaterne i spørgsmål
+1}\label{opgave-4---beregn-robuste-standardfejl-for-modellen-og-sammenlign-med-resultaterne-i-spuxf8rgsmuxe5l-1}}
+
+\hypertarget{opgave-5---test-hypotesen-h0-beta_2-1-mod-alternativet-h1-beta_2-neq-1}{%
+\subsection{\texorpdfstring{Opgave 5 - Test hypotesen H0:
+\(\beta_2 = 1\) mod alternativet H1:
+\(\beta_2 \neq 1\)}{Opgave 5 - Test hypotesen H0: \textbackslash beta\_2 = 1 mod alternativet H1: \textbackslash beta\_2 \textbackslash neq 1}}\label{opgave-5---test-hypotesen-h0-beta_2-1-mod-alternativet-h1-beta_2-neq-1}}
+
+\hypertarget{opgave-6---test-hypotesen-h0-beta_3-beta_4-0}{%
+\subsection{\texorpdfstring{Opgave 6 - Test hypotesen H0:
+\(\beta_3 = \beta_4 = 0\)}{Opgave 6 - Test hypotesen H0: \textbackslash beta\_3 = \textbackslash beta\_4 = 0}}\label{opgave-6---test-hypotesen-h0-beta_3-beta_4-0}}
+
+\hypertarget{opgave-7---estimer-modellen-vha.-fgls-og-kommenter-puxe5-resultaterne}{%
+\subsection{Opgave 7 - Estimer modellen vha. FGLS og kommenter på
+resultaterne}\label{opgave-7---estimer-modellen-vha.-fgls-og-kommenter-puxe5-resultaterne}}
+
+\hypertarget{opgave-8---har-fgls-estimationen-taget-huxf8jde-for-al-heteroskedasticiteten}{%
+\subsection{Opgave 8 - Har FGLS estimationen taget højde for al
+heteroskedasticiteten?}\label{opgave-8---har-fgls-estimationen-taget-huxf8jde-for-al-heteroskedasticiteten}}
+
+\end{document}
