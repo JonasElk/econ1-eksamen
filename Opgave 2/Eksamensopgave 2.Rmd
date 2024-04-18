@@ -11,38 +11,96 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
 library(ggplot2)
-library(tinytex)
 library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(zoo)
 library(stringr)
 library(ggrepel)
-library(pander)
-options(digits = 2)
+library(foreign)
+library(AER)
+library(lmtest)
+library(sandwich)
+library(texreg)
+library(tseries)
+options(digits = 6)
 options(scipen = 999)
 rm(list=ls())
 ```
 
 ```{r, echo = F, include=F}
-dat = read.csv("data2.csv")
+data2 = read.csv("data2.csv")
 ```
 
 
 # Eksamenssæt 2
 
-## Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet og fortolk resultaterne
+## Opgave 1 - Estimer de to modeller vha. OLS. Kommenter på outputtet, sammenlign og fortolk resultaterne.
+```{r}
+model1 = lm(salary ~ educ + salbegin + male + minority, data = data2)
+model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
 
-## Opgave 2 - Udfør grafisk modelkontrol
+screenreg(list(model1, model2))
+```
 
-## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testet og specialudgaven af White-testet
 
-## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
+## Opgave 2 - Udfør grafisk modelkontrol af de to modeller. Hvilken model vil du foretrække?
+```{r}
+par(mfrow = c(1,2))
+plot(model1, 2)
+hist(rstandard(model1), prob=T, col = rgb(0.8,0.8,1), ylim=c(0,0.45))
+lines(density(rstandard(model1)))
 
-## Opgave 5 - Test hypotesen H0: $\beta_2 = 1$ mod alternativet H1: $\beta_2 \neq 1$
+plot(model2, 2)
+hist(rstandard(model2), prob=T, col = rgb(0.8,0.8,1), ylim=c(0,0.45))
+lines(density(rstandard(model2)))
 
-## Opgave 6 - Test hypotesen H0: $\beta_3 = \beta_4 = 0$
+#Grafisk kontrol for misspecification
+plot(model1, 1)
+plot(model2, 1)
+```
 
-## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
 
-## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
+## Opgave 3 - Undersøg om de to modeller er misspecificerede vha. RESET-testet
+```{r}
+y2 = fitted(model1)^2
+y3 = fitted(model1)^3
+
+reset1 = lm(salary ~ educ + salbegin + male + minority + y2 + y3, data = data2)
+
+linearHypothesis(reset1, c("y2=0", "y3=0"))
+
+
+y2 = fitted(model2)^2
+y3 = fitted(model2)^3
+reset2 = lm(log(salary) ~ educ + log(salbegin) + male + minority + y2 + y3, data = data2)
+linearHypothesis(reset2, c("y2=0", "y3=0"))
+
+
+resettest(model1)
+resettest(model2)
+```
+Begge er insignifikante på 5%, men signifikant på 10%. De er dermed misspecificeret på 10% men ikke 5%. Hvorvidt den er misspecificeret ud fra reset-test afhænger af signifikansniveauet.
+
+## Opgave 4 - Forklar hvorfor det kunne være relevant at medtage educ2 som forklarende variabel i de to modeller. Estimer de to modeller igen hvor educ2 inkluderes (med tilhørende koefficient ¯5), kommenter kort på outputtet og udfør RESET-testet igen.
+```{r}
+model1educ = lm(salary ~ educ + I(educ^2) + salbegin + male + minority, data = data2)
+model2educ = lm(log(salary) ~ educ + I(educ^2) + log(salbegin) + male + minority, data = data2)
+
+screenreg(list(model1educ, model2educ))
+
+par(mfrow = c(1,2))
+plot(model1, 1)
+plot(model1educ, 1)
+
+plot(model2, 1)
+plot(model2educ, 1)
+
+reset(model1educ)
+reset(model2educ)
+```
+Højere p-værdier i begge, så de nu begge er insignifikante på 15% og under. Dermed er begge modeller nu ikke misspecificeret på nogle relevante signifikansniveauet. Dog er $educ^2$ ikke alene signifikant på 5% i model 2, og den estimeres ligeledes til 0 i denne.
+
+## Opgave 5 - Test hypotesen H0 : ¯1 = ¯5 = 0 i begge modeller (fra spørgsmål 4).
+
+## Opgave 6 - Kunne der være problemer med målefejl i de to modeller? I hvilke tilfælde vil det udgøre et problem?
