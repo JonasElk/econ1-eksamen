@@ -11,38 +11,97 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
 library(ggplot2)
-library(tinytex)
 library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(zoo)
 library(stringr)
 library(ggrepel)
-library(pander)
-options(digits = 2)
+library(foreign)
+library(AER)
+library(lmtest)
+library(sandwich)
+library(texreg)
+options(digits = 8)
 options(scipen = 999)
 rm(list=ls())
 ```
 
 ```{r, echo = F, include=F}
-dat = read.csv("data1.csv")
+data = read.csv("data1.csv")
+logsal = log(data$salary)
+educ = data$educ
+logbegin = data$salbegin
+male = data$male
+minority = data$minority
 ```
 
 
 # Eksamenssæt 1
 
 ## Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet og fortolk resultaterne
+```{r}
+model1 = lm(logsal ~ educ+logbegin+male+minority)
+summary(model1)
+```
+Alt er signifikant. Minority på 0.1%
+Afvist F-test
+0.77 adj $R^2$
 
 ## Opgave 2 - Udfør grafisk modelkontrol
+```{r}
+par(mfrow=c(2,2))
+plot(model1)
+```
+Heteroskedacitet.
+Skæv scale-location
 
 ## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testet og specialudgaven af White-testet
+```{r}
+bptest(model1)
+```
+Lav p-værdi - H0 afvises
+Der er heteroskedacitet
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
+```{r}
+model1robust <- coeftest(model1, vcov = vcovHC(model1, type = "HC0"))
+screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
+```
+Minority er signifikant på højere niveau. Kun små ændringer i SE
 
 ## Opgave 5 - Test hypotesen H0: $\beta_2 = 1$ mod alternativet H1: $\beta_2 \neq 1$
+T-test
+$$T = \frac{\hat{\beta}_j-a_j}{se(\hat{\beta}_j)}$$
+Bruger robust se
+$a_j$ er H0
+```{r}
+#summary(model1)
+t = (0.03008211-1) / 0.00296699
+t
+
+#kritiske værdier
+alpha = c(0.05, 0.01)
+qt(1-alpha/2, 469)
+
+#P-værdier - Forkert? im confused
+#pt(-abs(t), 469)
+```
+
 
 ## Opgave 6 - Test hypotesen H0: $\beta_3 = \beta_4 = 0$
+F-test
+```{r}
+linearHypothesis(model1, c("male=0", "minority=0"))
+#model1a = lm(logsal ~ educ+logbegin)
+#waldtest(model1, model1a)
+```
+Lav p-værdi - Afvist H0
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
 
+
+
 ## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
+
+
