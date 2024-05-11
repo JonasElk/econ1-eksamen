@@ -29,4 +29,20 @@ dat = read.csv("data3.csv")
 ```
 
 
-# Eksamenssæt 3
+# Eksamenssæt 3: Instrumentvariable
+
+## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne
+
+## Opgave 2 - Hvorfor kunne vi være bekymrede for at uddannelse er endogen? 
+
+## Opgave 3 - Er siblings, meduc og feduc brugbare som instrumenter?
+
+## Opgave 4 - Test om uddannelse er endogen
+
+## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
+
+## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
+
+## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
+
+

@@ -30,3 +30,23 @@ dat = read.csv("data4.csv")
 
 
 # Eksamenssæt 4
+
+## Opgave 1 - Opstil en lineær regressionsmodel for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
+
+### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
+### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+### (c) - Test om den partielle effekt af alder er forskellig fra nul.
+
+## Opgave 2 - Opstil både en logit- og en probit-model for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
+
+### (a) - Estimer modellerne.
+### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+### (c) - Test om den partielle effekt af alder er forskellig fra nul vha. et likelihoodratio-test.
+
+## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af income på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
+
+## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af f or ei gn på tværs af modellerne. Beregn APE og kommenter på resultaterne.
+
+## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
+
+## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
