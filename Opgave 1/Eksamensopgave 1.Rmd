@@ -44,7 +44,7 @@ minority = data$minority
 model1 = lm(logsal ~ educ+logbegin+male+minority)
 summary(model1)
 ```
-Alt er signifikant. Minority på 0.1%
+Alt er signifikant. Minority er signifikantpå 1%
 Afvist F-test
 0.77 adj $R^2$
 
@@ -58,6 +58,14 @@ Skæv scale-location
 
 ## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testet og specialudgaven af White-testet
 ```{r}
+u = resid(model1)
+u2 = u^2
+model1u = lm(u2 ~ educ+logbegin+male+minority)
+summary(model1u)
+lm_chi = 0.077789*474
+1-pchisq(lm_chi, 4)
+
+
 bptest(model1)
 ```
 Lav p-værdi - H0 afvises
@@ -99,9 +107,21 @@ linearHypothesis(model1, c("male=0", "minority=0"))
 Lav p-værdi - Afvist H0
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
+```{r}
+logu2 <- log(resid(model1)^2) #I do everything in one command, i.e., obtain resid, square them, and log them
+varreg<-lm(logu2 ~ educ+logbegin+male+minority)
+w <- exp(fitted(varreg))
+model2fgls = lm(logsal ~ educ+logbegin+male+minority, weight=1/w)
+summary(model2fgls)
+
+bptest(model2fgls)
+```
 
 
 
 ## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
+```{r}
+
+```
 
 

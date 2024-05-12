@@ -70,22 +70,23 @@ reset1 = lm(salary ~ educ + salbegin + male + minority + y2 + y3, data = data2)
 
 linearHypothesis(reset1, c("y2=0", "y3=0"))
 
+resettest(model1)
+
 
 y2 = fitted(model2)^2
 y3 = fitted(model2)^3
 reset2 = lm(log(salary) ~ educ + log(salbegin) + male + minority + y2 + y3, data = data2)
 linearHypothesis(reset2, c("y2=0", "y3=0"))
 
-
-resettest(model1)
 resettest(model2)
 ```
 Begge er insignifikante på 5%, men signifikant på 10%. De er dermed misspecificeret på 10% men ikke 5%. Hvorvidt den er misspecificeret ud fra reset-test afhænger af signifikansniveauet.
 
 ## Opgave 4 - Forklar hvorfor det kunne være relevant at medtage educ2 som forklarende variabel i de to modeller. Estimer de to modeller igen hvor educ2 inkluderes (med tilhørende koefficient ¯5), kommenter kort på outputtet og udfør RESET-testet igen.
 ```{r}
-model1educ = lm(salary ~ educ + I(educ^2) + salbegin + male + minority, data = data2)
-model2educ = lm(log(salary) ~ educ + I(educ^2) + log(salbegin) + male + minority, data = data2)
+educ2 = data2$educ^2
+model1educ = lm(salary ~ educ + educ2 + salbegin + male + minority, data = data2)
+model2educ = lm(log(salary) ~ educ + educ2 + log(salbegin) + male + minority, data = data2)
 
 screenreg(list(model1educ, model2educ))
 
@@ -101,6 +102,20 @@ reset(model2educ)
 ```
 Højere p-værdier i begge, så de nu begge er insignifikante på 15% og under. Dermed er begge modeller nu ikke misspecificeret på nogle relevante signifikansniveauet. Dog er $educ^2$ ikke alene signifikant på 5% i model 2, og den estimeres ligeledes til 0 i denne.
 
-## Opgave 5 - Test hypotesen H0 : ¯1 = ¯5 = 0 i begge modeller (fra spørgsmål 4).
+## Opgave 5 - Test hypotesen $H0 : \beta_1 = \beta_5 = 0$ i begge modeller (fra spørgsmål 4).
+```{r}
+linearHypothesis(model1educ, c("educ=0", "educ2=0"))
+#model1a = lm(logsal ~ educ+logbegin)
+#waldtest(model1, model1a)
+
+linearHypothesis(model2educ, c("educ=0", "educ2=0"))
+#model1a = lm(logsal ~ educ+logbegin)
+#waldtest(model1, model1a)
+```
+Lav p-værdi, så nulhypotese forkastes og $\beta_1$ og $\beta_5$ er derfor fælles signifikant
 
 ## Opgave 6 - Kunne der være problemer med målefejl i de to modeller? I hvilke tilfælde vil det udgøre et problem?
+Hvis den afhængige variabel, i dette tilfælde lønnen, har problemer med målefejl, vil dette komme til udtryk i fejlleddet i regressionen. Da lønnen, i tilfælde af målefejl, er den faktiske løn fratrukket dets fejlled, vil fejlleddet i regressionen være summen af det oprindelige fejlled, u, og målefejlen $e_0$. Det vil ikke skabe et problem så længe det oprindelige fejlled og målefejlen ikke er korreleret med nogle af de uafhængige variable, da det ellers vil skabe en bias i estimaterne.
+
+Hvis den uafhængige variabel derimod har målefejl afhænger effekten af antagelserne vedrørende målefejlen. I dette tilfælde kunne der potentielt være en målefejl i variablen educ, da den kan dække over meget forskellig uddannelse som kan være svært at opgøre.
+Hvis der ikke er en korrelation mellem målefejlen og den observerede variabel, dvs. $cov(educ,e_{educ}) = 0$, hvor $e_{educ}$ er målefejlen i variablen, er der nødvendigvis en korrelation mellem målefejlen og den ikke-observerede variabel $cov(educ^*,e_{educ}) \neq 0$. Derfor bliver fejlleddet i regressionen det oprindelige fejlled, u, fratrukket $\beta_1e_{educ}$. I dette tilfælde vil estimatet af regressionen stadig være unbiased og consistent, da fejlleddet ikke er korreleret med den observerede variabel.
