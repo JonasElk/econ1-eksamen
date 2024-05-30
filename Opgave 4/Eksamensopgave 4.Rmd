@@ -45,7 +45,7 @@ data = read.csv("data4.csv")
 
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af income på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
 
-## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af f or ei gn på tværs af modellerne. Beregn APE og kommenter på resultaterne.
+## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE og kommenter på resultaterne.
 
 ## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
 
