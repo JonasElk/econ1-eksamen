@@ -25,13 +25,13 @@ rm(list=ls())
 ```
 
 ```{r, echo = F, include=F}
-dat = read.csv("data4.csv")
+data = read.csv("data4.csv")
 ```
 
 
 # Eksamenssæt 4
 
-## Opgave 1 - Opstil en lineær regressionsmodel for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
+## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
