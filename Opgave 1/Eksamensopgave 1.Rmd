@@ -107,6 +107,14 @@ qt(1-alpha/2, 469)
 #pt(-abs(t), 469)
 ```
 
+Nyt forsøg: 
+```{r}
+alpha = 0.001 #bruger kun 0.001 da estimatet er signifikant på 0.1%
+qt(1-alpha/2, 469) #kritisk værdi 
+0.0301/0.0030 #t-værdien
+```
+Da t-værdien er højere end den kritiske værdi, kan vi afvise nulhypotesen, hvilket vil sige at $\beta_2 \neq 1$.
+
 
 ## Opgave 6 - Test hypotesen H0: $\beta_3 = \beta_4 = 0$
 F-test
@@ -115,7 +123,12 @@ linearHypothesis(model1, c("male=0", "minority=0"))
 #model1a = lm(logsal ~ educ+logbegin)
 #waldtest(model1, model1a)
 ```
-Lav p-værdi - Afvist H0
+RSS (kan også kaldes SSR) beskriver residual sum of squares, som er summen af de estimeret fejlled sat i anden, hvilket beskriver modellens fejlled, og hvis SSR = 0 er modellen perfekt.
+Den meget lave p-værdi, som tilnærmelsesvist er nul, gør at H0 kan afvises. Dette tyder på, at mindst et af estimaterne "male" eller "minority" er signifikant forskellig fra 0. Det kan altså ikke entydigt siges at de to estimater er lig hinanden.
+
+For at beregne F-statistic, kan der gøres brug af følgende formel: 
+$F = \frac {SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$
+Jf. ovenstående er F-værdien 22.6445, hvilket vil sige at der ikke er stor sandsynlighed for at de to estimater $\beta_3$ og $\beta_4$ er lig med nul. Derfor vil mindst et af de to estimater have relevans for modellen.
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
 ```{r}
@@ -127,12 +140,18 @@ summary(model2fgls)
 
 bptest(model2fgls)
 ```
-
+Det ses hvordan alle koefficenter er statistisk signifikante på 0,1%. Desuden har modellen en høj forklaringsgrad på $R^2$ = 0,73. Det signifikante resultat fra Breusch-Pagan testen indikerer at modellen indeholder heteroskedasticitet. 
+De relativt lave standart fejl i modellen indikere præcise estimater. T-værdierne udgør alle høje værdier, og disse kan sammen med de lave p-værdier indikere, at den enkelte variable har en stærk effekt på den afhængige variable. 
 
 
 ## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
-```{r}
+I ovenstående opgave blev det tydeligt at det signifikante resultat fra Breusch-Pagan testen indikerede, at modellen indeholdte heteroskedasticitet, hvilket er en god årsag til at benytte sig at FGLS estimationen. Denne tager nemlig højde for heteroskedasticitet i modellen, ved at omforme fejlledende så de bliver homoskedastiske (konstant varians). Anvendelsen af FGLS gør modellen mere præcis, end de resultater som opnås ved almindelig OLS, specielt når der er stærk heteroskedasticitet til stede. 
+Det kan dog ikke udelukkes, at der efter FGLS estimationen ikke er mere heteroskedasticitet, og derfor kan der udeføres en BP-test eller White-test. 
 
-```
+SKAL FLERE TEST UDFØRES?
+
+library(lmtest)
+# Antag at model_fgls er din FGLS model
+bptest(model_fgls)
 
 
