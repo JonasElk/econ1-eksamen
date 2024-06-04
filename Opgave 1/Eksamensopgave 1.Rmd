@@ -44,39 +44,50 @@ minority = data$minority
 model1 = lm(logsal ~ educ+logbegin+male+minority)
 summary(model1)
 ```
-Alt er signifikant. Minority er signifikantpå 1%
-Afvist F-test
-0.77 adj $R^2$
+
+Alle estimater er signifikante på 0,1% bortset fra "Minority", som er signifikant på 1%
+F-testen afvises grundet den lave p-værdi angivet ved < 0.000000000000000222, hvilket vil sige at modellene er statistisk signifikant. 
+Under antagelsen at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 3,5%. Samme princip er gældende for de tre andre variable "logbegin", "male", "minority".
+Derudover angiver ovenstående model at $R^2 = 0.77$, hvilket vil sige at dataen passer relativt godt til den estimerede model. 
+
 
 ## Opgave 2 - Udfør grafisk modelkontrol
 ```{r}
 par(mfrow=c(2,2))
 plot(model1)
 ```
-Heteroskedacitet.
-Skæv scale-location
+Ovenstående er udført grafisk modelkontrol. 
+"Residuals vs. Fitted" viser at residualerne ikke er spredte, hvilket er indikation på at der ikke er tale om et "non-linear relationsship". Dog er den røde linje her næsten vandret, hvilket kunne være tegn på det modsatte. 
+"Q-Q Residuals" viser at residualerne tilnærmelsesvist følger en ret linje, og derfor antages den at være normal distribueret. 
+"Scale-Location" belyser, at der er en skæv "scale-location",hvilket kan indikerer at der er tale om heteroskedasticitet for modellen. Ideelt ønskes at den røde linje er vandret samt at residualspunkterne er spredt og tilfældigt fordelt. 
+"Resudials vs. Leverage" tydeliggøre problematikken vedrørende outliers. Her kan der ses tre outliers, hvor nummer 29 ligger med betydelig afstand fra de resterende residualer, og derfor kan det være relevant at re-estimere værdierne igen uden nummer 29, da det kan give et mere konkret svar.
 
-## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testet og specialudgaven af White-testet
+
+## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testen og specialudgaven af White-testen
 ```{r}
 u = resid(model1)
 u2 = u^2
-model1u = lm(u2 ~ educ+logbegin+male+minority)
+model1u = lm(u2 ~ educ+logbegin+male+minority) #Wooldridge test
 summary(model1u)
 lm_chi = 0.077789*474
-1-pchisq(lm_chi, 4)
+1-pchisq(lm_chi, 4) #p-værdien for chi-square
 
 
-bptest(model1)
+bptest(model1); summary(model1u)
 ```
-Lav p-værdi - H0 afvises
-Der er heteroskedacitet
+
+HASHTAG DER ANGIVER KODEN
+H0: homoskedasticitet 
+BP-værdien på 36.8719 indikerer, at variansen af residualerne ikke er konstant, hvilket også bekræftes ved den lave p-værdi for chi-square. Med den lave p-værdi, kan H0 afvises, hvorfor det tyder på, at der findes heteroskedasticitet.
+
+SKAL KAN REDEGØRES FOR TESTEN?
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
 ```{r}
 model1robust <- coeftest(model1, vcov = vcovHC(model1, type = "HC0"))
 screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
 ```
-Minority er signifikant på højere niveau. Kun små ændringer i SE
+Den venstre kolonne udgør resultaterne fra opgave 1, og den højre kolonne belyser de robuste standardfejl. Der findes en lille ændring i signifikansniveauet, hvor "minority" er signifikant på et højere niveau. Desuden ses der små ændringer i standard error. 
 
 ## Opgave 5 - Test hypotesen H0: $\beta_2 = 1$ mod alternativet H1: $\beta_2 \neq 1$
 T-test
