@@ -45,9 +45,10 @@ model1 = lm(logsal ~ educ+logbegin+male+minority)
 summary(model1)
 ```
 
-Alle estimater er signifikante på 0,1% bortset fra "Minority", som er signifikant på 1%
-F-testen afvises grundet den lave p-værdi angivet ved < 0.000000000000000222, hvilket vil sige at modellene er statistisk signifikant. 
-Under antagelsen at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 3,5%. Samme princip er gældende for de tre andre variable "logbegin", "male", "minority".
+Alle estimater er signifikante på 0,1% bortset fra "Minority", som er signifikant på 1%.
+
+F-testen afvises grundet den lave p-værdi angivet ved < 0.000000000000000222, hvilket vil sige at variablene er "jointly significant", da nulhypotesen i F-testen, $H_0 = \beta_{1,2,3,4} = 0$ afvises. 
+Under antagelse af, at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 3,5%. Et ekstra års uddannelse vil altså øge lønnen med 3,5%. Samme princip er gældende for de tre andre variable "logbegin", "male", "minority".
 Derudover angiver ovenstående model at $R^2 = 0.77$, hvilket vil sige at dataen passer relativt godt til den estimerede model. 
 
 
@@ -58,41 +59,54 @@ plot(model1)
 ```
 Ovenstående er udført grafisk modelkontrol. 
 "Residuals vs. Fitted" viser at residualerne ikke er spredte, hvilket er indikation på at der ikke er tale om et "non-linear relationsship". Dog er den røde linje her næsten vandret, hvilket kunne være tegn på det modsatte. 
-"Q-Q Residuals" viser at residualerne tilnærmelsesvist følger en ret linje, og derfor antages den at være normal distribueret. 
-"Scale-Location" belyser, at der er en skæv "scale-location",hvilket kan indikerer at der er tale om heteroskedasticitet for modellen. Ideelt ønskes at den røde linje er vandret samt at residualspunkterne er spredt og tilfældigt fordelt. 
+"Q-Q plot" viser at residualerne tilnærmelsesvist følger en ret linje, og derfor antages formodes at være normalfordelt. 
+"Scale-Location" belyser, at der er en skæv "scale-location", hvilket kan indikerer at der er tale om heteroskedasticitet for modellen. Ideelt ønskes, at den røde linje er vandret samt at residualpunkterne er spredt og tilfældigt fordelt. 
 "Resudials vs. Leverage" tydeliggøre problematikken vedrørende outliers. Her kan der ses tre outliers, hvor nummer 29 ligger med betydelig afstand fra de resterende residualer, og derfor kan det være relevant at re-estimere værdierne igen uden nummer 29, da det kan give et mere konkret svar.
+
+Mangler noget med cook's distance 
+"Dog er den røde linje her næsten vandret, hvilket kunne være tegn på det modsatte."?
 
 
 ## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testen og specialudgaven af White-testen
+SKAL KAN REDEGØRES FOR TESTEN?
+$$H_0: homoskedasticitet$$
+Hvis p-værdien er lav i BP-testen/F-test vil $H_0$ afvises hvorfor der antages at være heteroskedasticitet.
 ```{r}
 u = resid(model1)
 u2 = u^2
-model1u = lm(u2 ~ educ+logbegin+male+minority) #Wooldridge test
+model1u = lm(u2 ~ educ+logbegin+male+minority) #Test for heteroskedasticitet
 summary(model1u)
-lm_chi = 0.077789*474
+```
+Da nulhypotesen i F-testen afvises angiver det, at der er heteroskedasticitet i modellen. Ved at bruge $\chi^2$ i stedet for F-test findes Breusch-Pagan testen.
+```{r}
+lm_chi = 0.077789*474 #BP-test
 1-pchisq(lm_chi, 4) #p-værdien for chi-square
 
 
-bptest(model1); summary(model1u)
+bptest(model1)
 ```
 
-HASHTAG DER ANGIVER KODEN
-H0: homoskedasticitet 
-BP-værdien på 36.8719 indikerer, at variansen af residualerne ikke er konstant, hvilket også bekræftes ved den lave p-værdi for chi-square. Med den lave p-værdi, kan H0 afvises, hvorfor det tyder på, at der findes heteroskedasticitet.
+BP-værdien på 36.8719 indikerer, at variansen af residualerne ikke er konstant, hvilket også bekræftes ved den lave p-værdi for chi-square. Med den lave p-værdi, kan $H_0$ afvises, hvorfor det tyder på, at der findes heteroskedasticitet.
 
-SKAL KAN REDEGØRES FOR TESTEN?
+White-test med fitted værdier\\
+Her benyttes residualer i anden som regresseres på de fitted værdier af modellen og de fitted værdier i anden for at belyse lineære og ikke-lineære forhold mellem de uafhængige variable og residualerne.
+```{r}
+white = lm(u2 ~ predict(model1) + I(predict(model1)^2))
+summary(white)
+```
+Igen afvises nulhypotesen i F-testen og der antages derfor at være heteroskedasticitet. Både $\hat{y}$ og $\hat{y}^2$ er signifikante i testen, så det kan ikke siges hvorvidt der er et lineært eller ikke-lineært forhold.
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
 ```{r}
 model1robust <- coeftest(model1, vcov = vcovHC(model1, type = "HC0"))
 screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
 ```
-Den venstre kolonne udgør resultaterne fra opgave 1, og den højre kolonne belyser de robuste standardfejl. Der findes en lille ændring i signifikansniveauet, hvor "minority" er signifikant på et højere niveau. Desuden ses der små ændringer i standard error. 
+Den venstre kolonne udgør resultaterne fra opgave 1, mens den højre kolonne viser samme estimater men med robuste standardafvigelser. Der findes en lille ændring i signifikansniveauet, hvor "minority" er signifikant på et højere niveau, hvilket skyldes den lavere standardafvigelse. 
 
 ## Opgave 5 - Test hypotesen H0: $\beta_2 = 1$ mod alternativet H1: $\beta_2 \neq 1$
-T-test
-$$T = \frac{\hat{\beta}_j-a_j}{se(\hat{\beta}_j)}$$
-Bruger robust se
+T-scoren beregnes med følgende formel
+$$T = \frac{\hat{\beta}_j-\beta_j}{se(\hat{\beta}_j)}$$
+Der vil blive brugt robust se \\
 $a_j$ er H0
 ```{r}
 #summary(model1)
@@ -103,17 +117,10 @@ t
 alpha = c(0.05, 0.01)
 qt(1-alpha/2, 469)
 
-#P-værdier - Forkert? im confused
-#pt(-abs(t), 469)
+#P-værdier
+pt(-abs(t), 469)
 ```
-
-Nyt forsøg: 
-```{r}
-alpha = 0.001 #bruger kun 0.001 da estimatet er signifikant på 0.1%
-qt(1-alpha/2, 469) #kritisk værdi 
-0.0301/0.0030 #t-værdien
-```
-Da t-værdien er højere end den kritiske værdi, kan vi afvise nulhypotesen, hvilket vil sige at $\beta_2 \neq 1$.
+De kritiske værdier for 5\% og og 1\% er henholdsvis 1,96 og 2,59 hvorfor $H_0$ afvises og $\beta_2 \neq 1$. P-værdien rapporteres i R som 0, da t-scoren er så lav at p-værdien er for lav til at vise.
 
 
 ## Opgave 6 - Test hypotesen H0: $\beta_3 = \beta_4 = 0$
@@ -123,11 +130,12 @@ linearHypothesis(model1, c("male=0", "minority=0"))
 #model1a = lm(logsal ~ educ+logbegin)
 #waldtest(model1, model1a)
 ```
-RSS (kan også kaldes SSR) beskriver residual sum of squares, som er summen af de estimeret fejlled sat i anden, hvilket beskriver modellens fejlled, og hvis SSR = 0 er modellen perfekt.
-Den meget lave p-værdi, som tilnærmelsesvist er nul, gør at H0 kan afvises. Dette tyder på, at mindst et af estimaterne "male" eller "minority" er signifikant forskellig fra 0. Det kan altså ikke entydigt siges at de to estimater er lig hinanden.
+RSS (kan også kaldes SSR) beskriver residual sum of squares, som er summen af de estimeret fejlled sat i anden, og hvis SSR = 0 er modellen perfekt ($R^2=1$).
+Den meget lave p-værdi, som tilnærmelsesvist er nul, gør at H0 kan afvises. Dette betyder, at estimaterne "male" eller "minority" er "jointly significant" og dermed i fællesskab forskellig fra 0.
 
 For at beregne F-statistic, kan der gøres brug af følgende formel: 
-$F = \frac {SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$
+$$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
+Her angiver $r$ den begrænsede model, hvor $\beta_3 = \beta_4 = 0$, mens $ur$ angiver den ubegrænsede model hvor alle variable indgår. $q$ er forskellen i frihedsgrader mellem de to modeller. $(n-k-1)$ er antal frihedsgrader i den ubegrænset model, hvor $n$ er antal observationer og $k$ er antal variable i modellen.\\
 Jf. ovenstående er F-værdien 22.6445, hvilket vil sige at der ikke er stor sandsynlighed for at de to estimater $\beta_3$ og $\beta_4$ er lig med nul. Derfor vil mindst et af de to estimater have relevans for modellen.
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
@@ -139,19 +147,31 @@ model2fgls = lm(logsal ~ educ+logbegin+male+minority, weight=1/w)
 summary(model2fgls)
 
 bptest(model2fgls)
+bptest(model1)
 ```
-Det ses hvordan alle koefficenter er statistisk signifikante på 0,1%. Desuden har modellen en høj forklaringsgrad på $R^2$ = 0,73. Det signifikante resultat fra Breusch-Pagan testen indikerer at modellen indeholder heteroskedasticitet. 
-De relativt lave standart fejl i modellen indikere præcise estimater. T-værdierne udgør alle høje værdier, og disse kan sammen med de lave p-værdier indikere, at den enkelte variable har en stærk effekt på den afhængige variable. 
+Det ses hvordan alle koefficienter er statistisk signifikante på 0,1%. Desuden har modellen en høj forklaringsgrad på $R^2 = 0,73$.
+De relativt lave standard fejl i modellen indikerer præcise estimater. T-værdierne udgør alle høje værdier, og disse kan sammen med de lave p-værdier indikere, at den enkelte variable har en stærk effekt på den afhængige variable. 
 
 
 ## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
-I ovenstående opgave blev det tydeligt at det signifikante resultat fra Breusch-Pagan testen indikerede, at modellen indeholdte heteroskedasticitet, hvilket er en god årsag til at benytte sig at FGLS estimationen. Denne tager nemlig højde for heteroskedasticitet i modellen, ved at omforme fejlledende så de bliver homoskedastiske (konstant varians). Anvendelsen af FGLS gør modellen mere præcis, end de resultater som opnås ved almindelig OLS, specielt når der er stærk heteroskedasticitet til stede. 
+
+I ovenstående opgave 3 blev det tydeligt, at det signifikante resultat fra Breusch-Pagan testen indikerede, at modellen indeholdte heteroskedasticitet, hvilket er en god årsag til at benytte sig at FGLS estimationen. Denne tager nemlig højde for heteroskedasticitet i modellen, ved at omforme fejlledende så de bliver homoskedastiske (konstant varians). Anvendelsen af FGLS gør modellen mere præcis, end de resultater som opnås ved almindelig OLS, specielt når der er stærk heteroskedasticitet til stede. 
 Det kan dog ikke udelukkes, at der efter FGLS estimationen ikke er mere heteroskedasticitet, og derfor kan der udeføres en BP-test eller White-test. 
 
-SKAL FLERE TEST UDFØRES?
+```{r}
+u2 = resid(model2fgls)^2
+model2fgls_u = lm(u2 ~ educ+logbegin+male+minority, weight=1/w)
+summary(model2fgls_u)
+```
+Da nulhypotesen i F-testen afvises angiver det, at der stadig er heteroskedasticitet i modellen trods brug af FGLS. Ved at bruge $\chi^2$ i stedet for F-test findes Breusch-Pagan testen.
+```{r}
+lm_chi = 0.070322*474 #BP-test
+1-pchisq(lm_chi, 4) #p-værdien for chi-square
+```
+Det signifikante resultat fra Breusch-Pagan testen indikerer, at modellen stadig indeholder heteroskedasticitet.
 
-library(lmtest)
-# Antag at model_fgls er din FGLS model
-bptest(model_fgls)
-
-
+```{r}
+white_fgls = lm(u2 ~ predict(model2fgls) + I(predict(model2fgls)^2))
+summary(white_fgls)
+```
+White-testen viser ligeledes tegn på heteroskedasticitet, da p-værdien i F-testen er tilnærmelsesvis nul.
