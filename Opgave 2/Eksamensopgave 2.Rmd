@@ -137,3 +137,5 @@ Hvis den afhængige variabel, i dette tilfælde lønnen, har problemer med måle
 
 Hvis den uafhængige variabel derimod har målefejl afhænger effekten af antagelserne vedrørende målefejlen. I dette tilfælde kunne der potentielt være en målefejl i variablen educ, da den kan dække over meget forskellig uddannelse som kan være svært at opgøre.
 Hvis der ikke er en korrelation mellem målefejlen og den observerede variabel, dvs. $cov(educ,e_{educ}) = 0$, hvor $e_{educ}$ er målefejlen i variablen, er der nødvendigvis en korrelation mellem målefejlen og den ikke-observerede variabel $cov(educ^*,e_{educ}) \neq 0$. Derfor bliver fejlleddet i regressionen det oprindelige fejlled, u, fratrukket $\beta_1e_{educ}$. I dette tilfælde vil estimatet af regressionen stadig være unbiased og consistent, da fejlleddet ikke er korreleret med den observerede variabel.
+
+MANGLER TEKST

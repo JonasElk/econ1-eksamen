@@ -53,13 +53,15 @@ Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korrelere
 ## Opgave 4 - Test om uddannelse er endogen
 Testen for endogenitet laves vha. den reduceret ligning, som er variablen mistænkt for endogenitetsproblemer regresseret på de øvrige uafhængige variable og instrumentvariablene. Heri er variablen eksogen, altså ukorreleret med det oprindelige fejlled ($u$), hvis og kun hvis fejlleddet fra den reducerede ligning ($v$) er ukorreleret med ($u$). Fejlleddet fra den reducerede ligning ($v$) er dog ikke observeret, hvorfor residualet bruges som proxy. Derfor inkluderes ($v$) i den oprindelige regresion, hvorefter en t-test bruges til teste hvorvidt den tilhørende estimator $\delta$ er signifikant. Hvis det findes, at $\delta$ ikke kan siges at være lig 0 er variablen endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen $H_0: \gamma = 0$ ikke kan afvises.
 ```{r}
+#Reduced form equation
 red_model = lm(educ ~ exp + male + ethblack + ethhisp + siblings + meduc + feduc, data)
 v = resid(red_model)
 
+#Test for endogenitet, hvor residualer fra ovenstående RFE er med. Signifkans af denne vil betyde endogenitet, tror jeg?
 endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
 summary(endo_model)
 ```
-
+V er insignifikant, så der er ikke endogenitet??? Hvis siblings fjernes er der endogenitet??? I'm confused
 
 ## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
 ```{r}
@@ -78,7 +80,35 @@ screenreg(list(OLS = model, two_SLS = sls), digits = 4)
 
 
 ## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
+MANGLER. Lektion 13
 
 ## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
+```{r}
+#Reduced form equation
+red_model = lm(educ ~ exp + male + ethblack + ethhisp + meduc + feduc, data)
+v = resid(red_model)
 
+#Test for endogenitet, hvor residualer fra ovenstående RFE er med. Signifkans af denne vil betyde endogenitet, tror jeg?
+endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
+summary(endo_model)
+```
+Der er endogenitet, fordi residualerne er signifikante (?).
+
+
+```{r}
+educ_fitted = fitted(red_model)
+
+linearHypothesis(red_model, c("meduc=0", "feduc=0")) #Test at IVs er signifikante
+
+sls2 = lm(learnings ~ educ_fitted + exp + male + ethblack + ethhisp, data)
+#summary(sls)
+
+#Sammenligning med før
+screenreg(list(OLS = model, "Tre IVs" = sls, "To IVs" = sls2), digits = 4)
+
+#Nedenstående er 2SLS lavet i R
+#sls_r = ivreg(learnings ~ educ + exp + male + ethblack + ethhisp | meduc + feduc + exp + male + ethblack + ethhisp, data = data)
+#summary(sls_r)
+```
+Ingen store ændringer
 

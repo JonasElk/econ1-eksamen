@@ -11,15 +11,18 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
 library(ggplot2)
-library(tinytex)
 library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(zoo)
 library(stringr)
 library(ggrepel)
-library(pander)
-options(digits = 2)
+library(foreign)
+library(AER)
+library(lmtest)
+library(sandwich)
+library(texreg)
+options(digits = 8)
 options(scipen = 999)
 rm(list=ls())
 ```
@@ -34,16 +37,41 @@ data = read.csv("data4.csv")
 ## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
+```{r}
+model_ols = lm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, data = data)
+summary(model_ols)
+```
+Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke signifikant. 
+
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul.
+
 
 ## Opgave 2 - Opstil både en logit- og en probit-model for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellerne.
+```{r}
+logit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "logit"),data = data)
+```
+
+```{r}
+probit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "probit"),data = data)
+```
+
+```{r}
+screenreg(list("LPM OLS" = model_ols, Logit = logit, Probit = probit))
+```
+Samme signifikansniveau for alle pånær intercept. Forskel i estimater
+
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul vha. et likelihoodratio-test.
 
-## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af income på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
+## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
+```{r}
+income_ape_logit = logitmfx
+```
+
 
 ## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE og kommenter på resultaterne.
 
