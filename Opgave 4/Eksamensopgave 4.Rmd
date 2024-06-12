@@ -22,6 +22,7 @@ library(AER)
 library(lmtest)
 library(sandwich)
 library(texreg)
+library(mfx)
 options(digits = 8)
 options(scipen = 999)
 rm(list=ls())
@@ -44,9 +45,10 @@ summary(model_ols)
 Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke signifikant. 
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+T-test? 
 
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul.
-
+T-test?
 
 ## Opgave 2 - Opstil både en logit- og en probit-model for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
 
@@ -69,12 +71,18 @@ Samme signifikansniveau for alle pånær intercept. Forskel i estimater
 
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
 ```{r}
-income_ape_logit = logitmfx
+ape_logit = logitmfx(logit, data = data, atmean=F)
+
+ape_logit
 ```
 
 
 ## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE og kommenter på resultaterne.
+```{r}
+```
+
 
 ## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
 
 ## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
+

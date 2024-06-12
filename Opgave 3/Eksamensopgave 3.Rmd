@@ -64,6 +64,7 @@ summary(endo_model)
 V er insignifikant, så der er ikke endogenitet??? Hvis siblings fjernes er der endogenitet??? I'm confused
 
 ## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
+MANGLER TEKST TIL 2SLS
 ```{r}
 educ_fitted = fitted(red_model)
 
@@ -80,7 +81,7 @@ screenreg(list(OLS = model, two_SLS = sls), digits = 4)
 
 
 ## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
-MANGLER. Lektion 13
+MANGLER. Lektion 13. IM STILL CONFUSED
 
 ## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
 ```{r}
