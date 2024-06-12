@@ -167,6 +167,9 @@ model.
 \subsection{Opgave 2 - Udfør grafisk
 modelkontrol}\label{opgave-2---udfuxf8r-grafisk-modelkontrol}}
 
+For at udføre grafisk kontrol opstilles en række plots som beskrives
+nedenfor.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
@@ -178,29 +181,51 @@ modelkontrol}\label{opgave-2---udfuxf8r-grafisk-modelkontrol}}
 Ovenstående er udført grafisk modelkontrol. ``Residuals vs.~Fitted''
 viser at residualerne ikke er spredte, hvilket er indikation på at der
 ikke er tale om et ``non-linear relationsship''. Dog er den røde linje
-her næsten vandret, hvilket kunne være tegn på det modsatte. ``Q-Q
-plot'' viser at residualerne tilnærmelsesvist følger en ret linje, og
-derfor antages formodes at være normalfordelt. ``Scale-Location''
+her næsten vandret (med undtagelse af den sidste del fra 4,5 på aksen
+for fitted values er linjens hældning negativ), hvilket kunne være tegn
+homoskedasticitet og dermed være tegn på et ``linear relationship''.
+``Q-Q plot'' viser at residualerne tilnærmelsesvist følger en ret linje,
+og derfor antages formodes at være normalfordelt. ``Scale-Location''
 belyser, at der er en skæv ``scale-location'', hvilket kan indikerer at
 der er tale om heteroskedasticitet for modellen. Ideelt ønskes, at den
 røde linje er vandret samt at residualpunkterne er spredt og tilfældigt
 fordelt. ``Resudials vs.~Leverage'' tydeliggøre problematikken
-vedrørende outliers. Her kan der ses tre outliers, hvor nummer 29 ligger
-med betydelig afstand fra de resterende residualer, og derfor kan det
-være relevant at re-estimere værdierne igen uden nummer 29, da det kan
-give et mere konkret svar.
+vedrørende outliers. Y-aksen angiver de standardiseret residualer givet
+ved \(\frac {e}{se}\), mens x-aksen angiver viser ``leverage'' som måler
+hvor stor indflydelse en observation har på estimaternes for
+regressionens koefficienter. De stiblede linjer viser de forskellige
+niveauer for Cook's distance, som viser hvorvidt en outlier har stor
+betydning for estimationen for regressionens koefficienter. Hvis Cook's
+distancen for en observation er større end 1, anses den for at være
+indflydelsesrig for estimationen. I modellen ses tre outliers, 205, 343
+og 029. Her ligger de to førstnævnte indenfor Cook's distance på 0,5
+vurderes til at have lav indflydelse, mens 029 ligger på en Cook's
+distance imellem 0,5 og 1, hvilket heller ikke vurderes til at have den
+store effekt på regressionens estimater.
 
-Mangler noget med cook's distance ``Dog er den røde linje her næsten
-vandret, hvilket kunne være tegn på det modsatte.''?
+Mangler noget med cook's distance - er det tilstrækkeligt? ``Dog er den
+røde linje her næsten vandret, hvilket kunne være tegn på det
+modsatte.''? - er det tilstrækkeligt?
 
 \hypertarget{opgave-3---test-for-heteroskedasticitet-vha.-breusch-pagan-testen-og-specialudgaven-af-white-testen}{%
 \subsection{Opgave 3 - Test for heteroskedasticitet vha.
 Breusch-Pagan-testen og specialudgaven af
 White-testen}\label{opgave-3---test-for-heteroskedasticitet-vha.-breusch-pagan-testen-og-specialudgaven-af-white-testen}}
 
-SKAL KAN REDEGØRES FOR TESTEN? \[H_0: homoskedasticitet\] Hvis p-værdien
-er lav i BP-testen/F-test vil \(H_0\) afvises hvorfor der antages at
-være heteroskedasticitet.
+For at teste for heteroskedasticitet udføres BP-testen samt
+specialudgaven af White-testen. Her udføres både BP-testen både manuelt
+og vha. funktionen i R. BP-testen udføres ved at kvadrere fejlledet i
+den oprindelige regression, hvorefter denne opstilles som en funktion af
+de uafhængige variable fra den oprindelige regression. Der udføres en
+F-test eller LM-test for at estimere p-værdien, og hvis denne er under
+det valgte siginifikansniveau afvises nullhypotesen. White-testen
+udføres også ved at opstille en regression for det kvadreret fejlled.
+Dog opstilles denne med de uafængige variable, de kvadrerede uafhængige
+variable samt krydsprodukterne af de uafhængige variable. Igen udføres
+en F-test eller LM-test for at vurdere hvorvidt nulhypotesen afvises
+eller accepteres. SKAL KAN REDEGØRES FOR TESTEN?
+\[H_0: homoskedasticitet\] Hvis p-værdien er lav i BP-testen/F-test vil
+\(H_0\) afvises hvorfor der antages at være heteroskedasticitet.
 
 \begin{Shaded}
 \begin{Highlighting}[]

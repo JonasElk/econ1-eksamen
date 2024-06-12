@@ -34,7 +34,7 @@ data = read.csv("data3.csv")
 
 # Eksamenssæt 3: Instrumentvariable
 
-## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne
+## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne    
 ```{r}
 model = lm(learnings ~ educ + exp + male + ethblack + ethhisp, data)
 summary(model)
@@ -45,7 +45,7 @@ Relativ lav $R^2$
 F-test med meget lav p-værdi - Variable er "jointly significant"
 
 ## Opgave 2 - Hvorfor kunne vi være bekymrede for at uddannelse er endogen? 
-Uddannelse vil være endogen hvis den er korreleret med en udeladt variabel som derfor skaber en bias. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker uddannelsesniveauet positivt og dermed skaber en bias.
+Uddannelse vil være endogen hvis den er korreleret med en udeladt variabel som derfor skaber en bias. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker uddannelsesniveauet positivt og dermed skaber en bias, eller forældrenes uddannelsesniveau. Ligeledes kan antallet af søskende have en negativ effekt på uddannelsesniveauet. 
 
 ## Opgave 3 - Er siblings, meduc og feduc brugbare som instrumenter?
 Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korreleret med den udeladte variabel, som i dette tilfælde er "ability", vil de være egnet som instrumenter. Det kan formentlig antages, at forældre uddannelse eller antal søskende uddannelse ikke har indflydelse på "ability", hvorfor denne betingelse til instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau formentlig delvist korreleret med den pågældendes uddannelse, mens antal søskende ikke i samme grad antages at være korreleret med uddannelsesniveauet. Derfor vil forældres uddannelse formentlig være bedre instrumenter end antal søskende.

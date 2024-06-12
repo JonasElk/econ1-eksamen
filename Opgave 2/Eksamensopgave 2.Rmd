@@ -80,6 +80,9 @@ Histogrammet for standardiserede residualer vil være normal fordelt, hvis midde
 For "Residuals vs. fitted" vil en det ses at punkterne er tilfældigt spredt over en vandret rød linje, hvis der er et lineært forhold mellem de ufahængige og afhængige variable. Residualerne for model 1 er ikke spredt, og den røde linje har en faldende tendens. Dog jo længere ud på x-aksen vi kommer jo mere tilfældigt spredte er de. Model 2 har samme tendent, hvor det dog ser ud til at punkterne er mere spredte (her er det vigtigt at være obs på x-aksens værdier, hvor x-aksen kun strækker sig fra 3-5 for model 2, mens den strækker sig fra 20-120 i model 1 - hvorfor det kan linje at model 1 er mindre spredt ift. model 2). Den røde linje for model 2 er dog fladere sammenlignet med model 1. 
 
 ## Opgave 3 - Undersøg om de to modeller er misspecificerede vha. RESET-testet
+RESET står for "regression specification error test" og blev lavet af Ramsey i 1969. 
+Hvis en model opfylder MLR4(homoskedastisitet), kan man teste for misspecifikation, ved at tilføje den kvadrerede form af de uafhængige variable, og derefter udføre en F-test for at teste joint null hypothesis.De kvadrerede variable vil fange, hvis der er noget ikke-lineært i modellen, og derfor vil de tilføjede kvadrerede variable være insignifikante for modellen, såfremt modellen ikke er misspecifiseret. 
+
 ```{r}
 y2 = fitted(model1)^2
 y3 = fitted(model1)^3
@@ -98,9 +101,12 @@ linearHypothesis(reset2, c("y2=0", "y3=0"))
 
 resettest(model2)
 ```
-Begge er insignifikante på 5%, men signifikant på 10%. De er dermed misspecificeret på 10% men ikke 5%. Hvorvidt den er misspecificeret ud fra reset-test afhænger af signifikansniveauet.
+Begge er insignifikante på 5%, men signifikante på 10%. De er dermed misspecificeret på 10% men ikke 5%. Hvorvidt den er misspecificeret ud fra reset-test afhænger af signifikansniveauet.
 
 ## Opgave 4 - Forklar hvorfor det kunne være relevant at medtage educ2 som forklarende variabel i de to modeller. Estimer de to modeller igen hvor educ2 inkluderes (med tilhørende koefficient ¯5), kommenter kort på outputtet og udfør RESET-testet igen.
+
+Som det fremgår af 2.3, kan modellen være misspecificeret. Det kan derfor efterprøves, om det skyldes en ikke-linær sammenhæng mellem længden af uddannelse (educ) og løn, ved at inkludere educ^2, for derefter lave RESET igen og se om der herefter vil være et klart svar på, hvorvidt modellen er mispecifiseret. 
+
 ```{r}
 educ2 = data2$educ^2
 model1educ = lm(salary ~ educ + educ2 + salbegin + male + minority, data = data2)
