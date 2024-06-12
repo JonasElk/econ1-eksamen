@@ -40,7 +40,7 @@ minority = data$minority
 # Eksamenssæt 1
 
 ## Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet og fortolk resultaterne
-```{r}
+```{r, include=F}
 model1 = lm(logsal ~ educ+logbegin+male+minority)
 summary(model1)
 ```
