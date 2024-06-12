@@ -11,38 +11,104 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
 library(ggplot2)
-library(tinytex)
 library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(zoo)
 library(stringr)
 library(ggrepel)
-library(pander)
-options(digits = 2)
+library(foreign)
+library(AER)
+library(lmtest)
+library(sandwich)
+library(texreg)
+options(digits = 8)
 options(scipen = 999)
 rm(list=ls())
 ```
 
 ```{r, echo = F, include=F}
-dat = read.csv("data3.csv")
+data = read.csv("data3.csv")
 ```
 
 
 # Eksamenssæt 3: Instrumentvariable
 
 ## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne
+```{r}
+model = lm(learnings ~ educ + exp + male + ethblack + ethhisp, data)
+summary(model)
+```
+hispanics er insignifikant med p-værdi på 33,2\%
+Resten er på 1\% eller lavere
+Relativ lav $R^2$
+F-test med meget lav p-værdi - Variable er "jointly significant"
 
 ## Opgave 2 - Hvorfor kunne vi være bekymrede for at uddannelse er endogen? 
+Uddannelse vil være endogen hvis den er korreleret med en udeladt variabel som derfor skaber en bias. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker uddannelsesniveauet positivt og dermed skaber en bias.
 
 ## Opgave 3 - Er siblings, meduc og feduc brugbare som instrumenter?
+Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korreleret med den udeladte variabel, som i dette tilfælde er "ability", vil de være egnet som instrumenter. Det kan formentlig antages, at forældre uddannelse eller antal søskende uddannelse ikke har indflydelse på "ability", hvorfor denne betingelse til instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau formentlig delvist korreleret med den pågældendes uddannelse, mens antal søskende ikke i samme grad antages at være korreleret med uddannelsesniveauet. Derfor vil forældres uddannelse formentlig være bedre instrumenter end antal søskende.
 
 ## Opgave 4 - Test om uddannelse er endogen
+Testen for endogenitet laves vha. den reduceret ligning, som er variablen mistænkt for endogenitetsproblemer regresseret på de øvrige uafhængige variable og instrumentvariablene. Heri er variablen eksogen, altså ukorreleret med det oprindelige fejlled ($u$), hvis og kun hvis fejlleddet fra den reducerede ligning ($v$) er ukorreleret med ($u$). Fejlleddet fra den reducerede ligning ($v$) er dog ikke observeret, hvorfor residualet bruges som proxy. Derfor inkluderes ($v$) i den oprindelige regresion, hvorefter en t-test bruges til teste hvorvidt den tilhørende estimator $\delta$ er signifikant. Hvis det findes, at $\delta$ ikke kan siges at være lig 0 er variablen endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen $H_0: \gamma = 0$ ikke kan afvises.
+```{r}
+#Reduced form equation
+red_model = lm(educ ~ exp + male + ethblack + ethhisp + siblings + meduc + feduc, data)
+v = resid(red_model)
+
+#Test for endogenitet, hvor residualer fra ovenstående RFE er med. Signifkans af denne vil betyde endogenitet, tror jeg?
+endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
+summary(endo_model)
+```
+V er insignifikant, så der er ikke endogenitet??? Hvis siblings fjernes er der endogenitet??? I'm confused
 
 ## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
+```{r}
+educ_fitted = fitted(red_model)
+
+linearHypothesis(red_model, c("meduc=0", "feduc=0", "siblings=0")) #Test at IVs er signifikante
+
+sls = lm(learnings ~ educ_fitted + exp + male + ethblack + ethhisp, data)
+#summary(sls)
+screenreg(list(OLS = model, two_SLS = sls), digits = 4)
+
+#Nedenstående er 2SLS lavet i R
+#sls_r = ivreg(learnings ~ educ + exp + male + ethblack + ethhisp | meduc + feduc + siblings + exp + male + ethblack + ethhisp, data = data)
+#summary(sls_r)
+```
+
 
 ## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
+MANGLER. Lektion 13
 
 ## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
+```{r}
+#Reduced form equation
+red_model = lm(educ ~ exp + male + ethblack + ethhisp + meduc + feduc, data)
+v = resid(red_model)
 
+#Test for endogenitet, hvor residualer fra ovenstående RFE er med. Signifkans af denne vil betyde endogenitet, tror jeg?
+endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
+summary(endo_model)
+```
+Der er endogenitet, fordi residualerne er signifikante (?).
+
+
+```{r}
+educ_fitted = fitted(red_model)
+
+linearHypothesis(red_model, c("meduc=0", "feduc=0")) #Test at IVs er signifikante
+
+sls2 = lm(learnings ~ educ_fitted + exp + male + ethblack + ethhisp, data)
+#summary(sls)
+
+#Sammenligning med før
+screenreg(list(OLS = model, "Tre IVs" = sls, "To IVs" = sls2), digits = 4)
+
+#Nedenstående er 2SLS lavet i R
+#sls_r = ivreg(learnings ~ educ + exp + male + ethblack + ethhisp | meduc + feduc + exp + male + ethblack + ethhisp, data = data)
+#summary(sls_r)
+```
+Ingen store ændringer
 

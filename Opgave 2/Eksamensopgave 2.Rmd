@@ -42,13 +42,23 @@ model2 = lm(log(salary) ~ educ + log(salbegin) + male + minority, data = data2)
 
 screenreg(list(model1, model2))
 ```
+Model 1 og model 2 er forskellige fra hinanden idet variablen "salbegin" inddrages i model 1, mens variablen "log(salbegin)" er inddraget i model 2. 
 
+For model 1 er alle estimaterne signifikante med undtagelse af "minority", hvilket betyder at det ikke er sikkert at den har en betydning for den afhængige variabel. Skæringspunktet ("intercept"), "educ" og "salbegin" er signifikante på 0.1%, mens "male" er signifikant på 5%. 
+
+For model 2 er alle estimaterne signifikante, hvor skæringspunktet ("intercept"), "educ" og "log(salbegin)" er signifikante på 0.1%, mens estimaterne "male" og "minority" er signifikante på 5%. 
+
+Estimaterne angiver, at ved en stigning i den valgte variable (under antagelse at de resterende variable holdes konstant) vil medføre en ændring i lønnen angiveet ved det enkelte estimat. 
+
+$R^2$ angiver forklaringsgraden af dataen i forhold til den estimeret model. Her kan det ses at $R^2 = 0.8$ i model 1, mens $R^2 = 0.81$ for model 2. 
+Kigges der i stedet på "adjusted $R^2$", som også tager hensyn til hvorvidt flere variable tilføjes til modellen, kan det ses at model 1 har en $R^2 = 0.79$ mens model 2 har en $R^2 = 0.8$. 
+Dermed uanset hvilken $R^2$ der tages udgangspunkt i passer dataen til model 2 1% bedre til modellen sammenlignet med model 1. 
 
 ## Opgave 2 - Udfør grafisk modelkontrol af de to modeller. Hvilken model vil du foretrække?
 ```{r}
 par(mfrow = c(1,2))
 plot(model1, 2)
-hist(rstandard(model1), prob=T, col = rgb(0.8,0.8,1), ylim=c(0,0.45))
+hist(rstandard(model1), prob=T, col = rgb(0.8,0.8,1), ylim=c(0,0.6))
 lines(density(rstandard(model1)))
 
 plot(model2, 2)
@@ -60,6 +70,14 @@ plot(model1, 1)
 plot(model2, 1)
 ```
 
+I ovenstående kan der ses tre plot for hver af de to modeller: "Q-Q residuals", historgram for de standardiserede residualer samt plot for "residuals vs. fitted"
+
+For Q-Q residuals at punkterne følger den stiblede rette linje. Hvis punkterne systematisk afviger fra den rette linje vil det tyde på at residualerne afviger fra at være normalfordelte. 
+For model 1 er passer punkterne til dels den rette linje. Dog er der også en del outliers især til højre for 0 på x-aksen.Modsat for model 2 passer de standardiserede residualer noget bedre til den rette linje, dog er der en svag systematisk afvigelse i yderpunkterne, hvor punkterne ligger over den stiplede linje.
+
+Histogrammet for standardiserede residualer vil være normal fordelt, hvis middelværdien for residualerne ligger omkring nul, hvilket vil indikerere at regressionens fejlled ikke over- eller undervurderer modellen systematisk. For model 1 ser fordelingen ud til at være en smule højreskæv, dog med en middelværdi på omkring 0. Samme tendens ses for model 2, hvor fordelingen her også er højreskæv, dog ligger middelværdien her en smule til venstre for nul. 
+
+For "Residuals vs. fitted" vil en det ses at punkterne er tilfældigt spredt over en vandret rød linje, hvis der er et lineært forhold mellem de ufahængige og afhængige variable. Residualerne for model 1 er ikke spredt, og den røde linje har en faldende tendens. Dog jo længere ud på x-aksen vi kommer jo mere tilfældigt spredte er de. Model 2 har samme tendent, hvor det dog ser ud til at punkterne er mere spredte (her er det vigtigt at være obs på x-aksens værdier, hvor x-aksen kun strækker sig fra 3-5 for model 2, mens den strækker sig fra 20-120 i model 1 - hvorfor det kan linje at model 1 er mindre spredt ift. model 2). Den røde linje for model 2 er dog fladere sammenlignet med model 1. 
 
 ## Opgave 3 - Undersøg om de to modeller er misspecificerede vha. RESET-testet
 ```{r}
@@ -120,4 +138,8 @@ Hvis den afhængige variabel, i dette tilfælde lønnen, har problemer med måle
 Hvis den uafhængige variabel derimod har målefejl afhænger effekten af antagelserne vedrørende målefejlen. I dette tilfælde kunne der potentielt være en målefejl i variablen educ, da den kan dække over meget forskellig uddannelse som kan være svært at opgøre.
 Hvis der ikke er en korrelation mellem målefejlen og den observerede variabel, dvs. $cov(educ,e_{educ}) = 0$, hvor $e_{educ}$ er målefejlen i variablen, er der nødvendigvis en korrelation mellem målefejlen og den ikke-observerede variabel $cov(educ^*,e_{educ}) \neq 0$. Derfor bliver fejlleddet i regressionen det oprindelige fejlled, u, fratrukket $\beta_1e_{educ}$. I dette tilfælde vil estimatet af regressionen stadig være unbiased og consistent, da fejlleddet ikke er korreleret med den observerede variabel.
 
+<<<<<<< HEAD
 Hvis der er en korrelation mellem målefejlen og den observerede variabel $cov(educ,e_{educ}) \neq 0$, da opstår fejlen CEV (classical errors-in.variables). Dette betyder estimatoren er biased, og OLS altid vil undervurdere effekten af $\beta$. Da det er en multipel regression, vil en målefejl i dette tilfælde i en afhængig variabel betyde bias i alle andre parametre.
+=======
+MANGLER TEKST
+>>>>>>> 765bcd5c5d30da52789b4da6b4d958484b32f4a0

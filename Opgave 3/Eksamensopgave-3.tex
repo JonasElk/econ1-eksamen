@@ -1,0 +1,320 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace}\onehalfspacing
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\hypertarget{eksamenssuxe6t-3-instrumentvariable}{%
+\section{Eksamenssæt 3:
+Instrumentvariable}\label{eksamenssuxe6t-3-instrumentvariable}}
+
+\hypertarget{opgave-1---estimer-modellen-vha.-ols-og-kommenter-puxe5-resultaterne}{%
+\subsection{Opgave 1 - Estimer modellen vha. OLS og kommenter på
+resultaterne}\label{opgave-1---estimer-modellen-vha.-ols-og-kommenter-puxe5-resultaterne}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OtherTok{=} \FunctionTok{lm}\NormalTok{(learnings }\SpecialCharTok{\textasciitilde{}}\NormalTok{ educ }\SpecialCharTok{+}\NormalTok{ exp }\SpecialCharTok{+}\NormalTok{ male }\SpecialCharTok{+}\NormalTok{ ethblack }\SpecialCharTok{+}\NormalTok{ ethhisp, data)}
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = learnings ~ educ + exp + male + ethblack + ethhisp, 
+##     data = data)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -2.075849 -0.280064 -0.001448  0.307748  1.984409 
+## 
+## Coefficients:
+##               Estimate Std. Error t value              Pr(>|t|)    
+## (Intercept)  0.3962265  0.1735078  2.2836              0.022801 *  
+## educ         0.1242201  0.0094515 13.1429 < 0.00000000000000022 ***
+## exp          0.0338820  0.0050456  6.7152      0.00000000004986 ***
+## male         0.2934491  0.0458032  6.4067      0.00000000033631 ***
+## ethblack    -0.1956696  0.0712545 -2.7461              0.006243 ** 
+## ethhisp     -0.0974063  0.1003417 -0.9707              0.332132    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.51025 on 514 degrees of freedom
+## Multiple R-squared:  0.35393,    Adjusted R-squared:  0.34764 
+## F-statistic: 56.316 on 5 and 514 DF,  p-value: < 0.000000000000000222
+\end{verbatim}
+
+hispanics er insignifikant med p-værdi på 33,2\% Resten er på 1\% eller
+lavere Relativ lav \(R^2\) F-test med meget lav p-værdi - Variable er
+``jointly significant''
+
+\hypertarget{opgave-2---hvorfor-kunne-vi-vuxe6re-bekymrede-for-at-uddannelse-er-endogen}{%
+\subsection{Opgave 2 - Hvorfor kunne vi være bekymrede for at uddannelse
+er
+endogen?}\label{opgave-2---hvorfor-kunne-vi-vuxe6re-bekymrede-for-at-uddannelse-er-endogen}}
+
+Uddannelse vil være endogen hvis den er korreleret med en udeladt
+variabel som derfor skaber en bias. Denne udeladte variabel kunne
+eksempelvis være ``ability'', som påvirker uddannelsesniveauet positivt
+og dermed skaber en bias.
+
+\hypertarget{opgave-3---er-siblings-meduc-og-feduc-brugbare-som-instrumenter}{%
+\subsection{Opgave 3 - Er siblings, meduc og feduc brugbare som
+instrumenter?}\label{opgave-3---er-siblings-meduc-og-feduc-brugbare-som-instrumenter}}
+
+Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er
+korreleret med den udeladte variabel, som i dette tilfælde er
+``ability'', vil de være egnet som instrumenter. Det kan formentlig
+antages, at forældre uddannelse eller antal søskende uddannelse ikke har
+indflydelse på ``ability'', hvorfor denne betingelse til
+instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau
+formentlig delvist korreleret med den pågældendes uddannelse, mens antal
+søskende ikke i samme grad antages at være korreleret med
+uddannelsesniveauet. Derfor vil forældres uddannelse formentlig være
+bedre instrumenter end antal søskende.
+
+\hypertarget{opgave-4---test-om-uddannelse-er-endogen}{%
+\subsection{Opgave 4 - Test om uddannelse er
+endogen}\label{opgave-4---test-om-uddannelse-er-endogen}}
+
+Testen for endogenitet laves vha. den reduceret ligning, som er
+variablen mistænkt for endogenitetsproblemer regresseret på de øvrige
+uafhængige variable og instrumentvariablene. Heri er variablen eksogen,
+altså ukorreleret med det oprindelige fejlled (\(u\)), hvis og kun hvis
+fejlleddet fra den reducerede ligning (\(v\)) er ukorreleret med
+(\(u\)). Fejlleddet fra den reducerede ligning (\(v\)) er dog ikke
+observeret, hvorfor residualet bruges som proxy. Derfor inkluderes
+(\(v\)) i den oprindelige regresion, hvorefter en t-test bruges til
+teste hvorvidt den tilhørende estimator \(\delta\) er signifikant. Hvis
+det findes, at \(\delta\) ikke kan siges at være lig 0 er variablen
+endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen
+\(H_0: \gamma = 0\) ikke kan afvises.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{red\_model }\OtherTok{=} \FunctionTok{lm}\NormalTok{(educ }\SpecialCharTok{\textasciitilde{}}\NormalTok{ exp }\SpecialCharTok{+}\NormalTok{ male }\SpecialCharTok{+}\NormalTok{ ethblack }\SpecialCharTok{+}\NormalTok{ ethhisp }\SpecialCharTok{+}\NormalTok{ siblings }\SpecialCharTok{+}\NormalTok{ meduc }\SpecialCharTok{+}\NormalTok{ feduc, data)}
+\NormalTok{v }\OtherTok{=} \FunctionTok{resid}\NormalTok{(red\_model)}
+
+\NormalTok{endo\_model }\OtherTok{=} \FunctionTok{lm}\NormalTok{(learnings }\SpecialCharTok{\textasciitilde{}}\NormalTok{ educ }\SpecialCharTok{+}\NormalTok{ exp }\SpecialCharTok{+}\NormalTok{ male }\SpecialCharTok{+}\NormalTok{ ethblack }\SpecialCharTok{+}\NormalTok{ ethhisp }\SpecialCharTok{+}\NormalTok{ v, data)}
+\FunctionTok{summary}\NormalTok{(endo\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = learnings ~ educ + exp + male + ethblack + ethhisp + 
+##     v, data = data)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -2.121193 -0.279066 -0.003089  0.298275  2.074787 
+## 
+## Coefficients:
+##              Estimate Std. Error t value           Pr(>|t|)    
+## (Intercept) -0.064700   0.339003 -0.1909            0.84871    
+## educ         0.153036   0.020516  7.4593 0.0000000000003742 ***
+## exp          0.037628   0.005567  6.7591 0.0000000000378421 ***
+## male         0.290479   0.045775  6.3458 0.0000000004868537 ***
+## ethblack    -0.157544   0.075122 -2.0972            0.03647 *  
+## ethhisp     -0.069476   0.101739 -0.6829            0.49499    
+## v           -0.036550   0.023106 -1.5818            0.11430    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.50951 on 513 degrees of freedom
+## Multiple R-squared:  0.35706,    Adjusted R-squared:  0.34955 
+## F-statistic: 47.484 on 6 and 513 DF,  p-value: < 0.000000000000000222
+\end{verbatim}
+
+\hypertarget{opgave-5---estimer-modellen-vha.-2sls-hvor-du-guxf8r-brug-af-de-tre-beskrevne-instrumenter.-sammenlign-med-resultaterne-i-spuxf8rgsmuxe5l-1.}{%
+\subsection{Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de
+tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål
+1.}\label{opgave-5---estimer-modellen-vha.-2sls-hvor-du-guxf8r-brug-af-de-tre-beskrevne-instrumenter.-sammenlign-med-resultaterne-i-spuxf8rgsmuxe5l-1.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{educ\_fitted }\OtherTok{=} \FunctionTok{fitted}\NormalTok{(red\_model)}
+
+\FunctionTok{linearHypothesis}\NormalTok{(red\_model, }\FunctionTok{c}\NormalTok{(}\StringTok{"meduc=0"}\NormalTok{, }\StringTok{"feduc=0"}\NormalTok{, }\StringTok{"siblings=0"}\NormalTok{)) }\CommentTok{\#Test at IVs er signifikante}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Linear hypothesis test
+## 
+## Hypothesis:
+## meduc = 0
+## feduc = 0
+## siblings = 0
+## 
+## Model 1: restricted model
+## Model 2: educ ~ exp + male + ethblack + ethhisp + siblings + meduc + feduc
+## 
+##   Res.Df     RSS Df Sum of Sq       F                 Pr(>F)    
+## 1    515 2914.55                                                
+## 2    512 2297.79  3   616.752 45.8087 < 0.000000000000000222 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sls }\OtherTok{=} \FunctionTok{lm}\NormalTok{(learnings }\SpecialCharTok{\textasciitilde{}}\NormalTok{ educ\_fitted }\SpecialCharTok{+}\NormalTok{ exp }\SpecialCharTok{+}\NormalTok{ male }\SpecialCharTok{+}\NormalTok{ ethblack }\SpecialCharTok{+}\NormalTok{ ethhisp, data)}
+\CommentTok{\#summary(sls)}
+\FunctionTok{screenreg}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{OLS =}\NormalTok{ model, }\AttributeTok{two\_SLS =}\NormalTok{ sls), }\AttributeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## =======================================
+##              OLS           two_SLS     
+## ---------------------------------------
+## (Intercept)    0.3962 *     -0.0647    
+##               (0.1735)      (0.3762)   
+## educ           0.1242 ***              
+##               (0.0095)                 
+## exp            0.0339 ***    0.0376 ***
+##               (0.0050)      (0.0062)   
+## male           0.2934 ***    0.2905 ***
+##               (0.0458)      (0.0508)   
+## ethblack      -0.1957 **    -0.1575    
+##               (0.0713)      (0.0834)   
+## ethhisp       -0.0974       -0.0695    
+##               (0.1003)      (0.1129)   
+## educ_fitted                  0.1530 ***
+##                             (0.0228)   
+## ---------------------------------------
+## R^2            0.3539        0.2065    
+## Adj. R^2       0.3476        0.1988    
+## Num. obs.    520           520         
+## =======================================
+## *** p < 0.001; ** p < 0.01; * p < 0.05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Nedenstående er 2SLS lavet i R}
+\CommentTok{\#sls\_r = ivreg(learnings \textasciitilde{} educ + exp + male + ethblack + ethhisp | meduc + feduc + siblings + exp + male + ethblack + ethhisp, data = data)}
+\CommentTok{\#summary(sls\_r)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{opgave-6---udfuxf8r-overidentifikationstestet.-hvad-konkluderer-du}{%
+\subsection{Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer
+du?}\label{opgave-6---udfuxf8r-overidentifikationstestet.-hvad-konkluderer-du}}
+
+\hypertarget{opgave-7---udfuxf8r-hele-analysen-igen-hvor-du-kun-bruger-meduc-og-feduc-som-instrumenter.-uxe6ndrer-det-puxe5-dine-konklusioner}{%
+\subsection{Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc
+og feduc som instrumenter. Ændrer det på dine
+konklusioner?}\label{opgave-7---udfuxf8r-hele-analysen-igen-hvor-du-kun-bruger-meduc-og-feduc-som-instrumenter.-uxe6ndrer-det-puxe5-dine-konklusioner}}
+
+\end{document}
