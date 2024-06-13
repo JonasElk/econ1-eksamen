@@ -6,7 +6,7 @@ header-includes:
     - \usepackage{setspace}\onehalfspacing
 ---
 
-```{r setup, include=FALSE}
+```{r setup4, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
@@ -38,41 +38,76 @@ data = read.csv("data4.csv")
 ## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
+MANGLER FORKLARING AF LPM + SVAGHEDER
+U ER PER DEFINITION HETEROSKEDASTIC - DER BRUGES ROBUST SE
 ```{r}
 model_ols = lm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, data = data)
-summary(model_ols)
+robust_ols = coeftest(model_ols, vcov = vcovHC(model_ols, type = "HC0"))
+
+screenreg(list(OLS = model_ols, OLS_robust_se = robust_ols), digits = 4)
+#summary(model_ols)
 ```
-Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke signifikant. 
+Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke signifikant.
+INGEN FORSKEL PGA ROBUST SE
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
-T-test? 
+For at teste hvorvidt den partielle effekt af en variabel er forskellig fra nul bruges en t-test. Hvorvidt nulhypotesen afvises afhænger af den beregnede t-score og dertilhørende p-værdi
+$$H_0: \beta_4 = 0$$
+$$H_1: \beta_4 \neq 0$$
+T-scoren beregnes ud fra den estimerede $\beta$ samt den tilhørende standardafvigelse. Dette kan gøres, da nulhypotesen er, at den faktiske værdi er nul, hvorfor dette led ikke indgår i formlen.
+$$t = \frac{\hat{\beta_j}}{se(\hat{\beta_j})}$$
+I nedenstående vil de robuste standardafvigelser blive benyttet til udregningen af t-scoren
+```{r, echo = F}
+cat("Kritisk værdi ved 5% = ",qt(1-0.025, df=length(data$educ)-1))
+cat("Kritisk værdi vec 1% = ",qt(1-0.005, df=length(data$educ)-1))
+```
+```{r}
+t = 0.0068/0.0059
+```
+```{r, echo = F}
+cat("t-score = ", t)
+```
+Da t-scoren er under den kritiske værdi kan $H_0$ ikke afvises. Det samme vil ses i beregningen af p-værdien nedenfor.
+```{r}
+2*(1-pt(t, df=length(data$educ)-1))
+```
+Da p-værdien er højere end det den fastsatte grænse på 5\% er resultatet statistisk signifikant.
+
 
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul.
-T-test?
+For at teste hvorvidt alder er statistisk signifikant i modellen bruges en F-test, da alder indgår flere gange, eftersom den kvadrerede alder også er med. 
+
+```{r}
+linearHypothesis(model_ols, c("age=0", "agesq=0"))
+```
+
 
 ## Opgave 2 - Opstil både en logit- og en probit-model for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellerne.
-```{r}
-logit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "logit"),data = data)
+```{r, include = F}
+logit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "logit"), data = data)
 ```
 
-```{r}
-probit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "probit"),data = data)
+```{r, include = F}
+probit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "probit"), data = data)
 ```
 
 ```{r}
 screenreg(list("LPM OLS" = model_ols, Logit = logit, Probit = probit))
 ```
-Samme signifikansniveau for alle pånær intercept. Forskel i estimater
+ESTIMATER FOR LOGIT OG PROBIT KAN IKKE FORTOLKES SOM DE ER
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul vha. et likelihoodratio-test.
 
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
+BRUGER ROBUST SE
 ```{r}
-ape_logit = logitmfx(logit, data = data, atmean=F)
+ape_logit = logitmfx(logit, data = data, atmean=F, robust = T)
 
+screenreg(list(ape_logit = ape_logit), digits = 4)
 ape_logit
 ```
 

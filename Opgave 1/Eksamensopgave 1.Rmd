@@ -29,9 +29,9 @@ rm(list=ls())
 
 ```{r, echo = F, include=F}
 data = read.csv("data1.csv")
-logsal = log(data$salary)
+logsal = data$lsalary
 educ = data$educ
-logbegin = data$salbegin
+logbegin = data$lsalbegin
 male = data$male
 minority = data$minority
 ```
@@ -106,8 +106,13 @@ Her benyttes residualer i anden som regresseres på de fitted værdier af modell
 ```{r}
 white = lm(u2 ~ predict(model1) + I(predict(model1)^2))
 summary(white)
+
+lm_chi = 0.022954*474 #BP-test
+1-pchisq(lm_chi, 2) #p-værdien for chi-square
+
+#bptest(model1, ~ predict(model1) + I(predict(model1)^2))
 ```
-Igen afvises nulhypotesen i F-testen og der antages derfor at være heteroskedasticitet. Både $\hat{y}$ og $\hat{y}^2$ er signifikante i testen, så det kan ikke siges hvorvidt der er et lineært eller ikke-lineært forhold.
+Igen afvises nulhypotesen i F-testen og der antages derfor at være heteroskedasticitet, hvilket også gælder når $\chi^2$ bruges og dermed en BP-test. Både $\hat{y}$ og $\hat{y}^2$ er signifikante i testen, så det kan ikke siges hvorvidt der er et lineært eller ikke-lineært forhold.
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
 MANGLER FORKLARING AF ROBUSTE SE

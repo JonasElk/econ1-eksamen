@@ -1,0 +1,363 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{setspace}\onehalfspacing
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\hypertarget{eksamenssuxe6t-4}{%
+\section{Eksamenssæt 4}\label{eksamenssuxe6t-4}}
+
+\hypertarget{opgave-1---opstil-en-lineuxe6r-regressionsmodel-for-hvor-du-bruger-de-beskrevne-forklarende-variable.}{%
+\subsection{\texorpdfstring{Opgave 1 - Opstil en lineær regressionsmodel
+for \textit{participation} hvor du bruger de beskrevne forklarende
+variable.}{Opgave 1 - Opstil en lineær regressionsmodel for  hvor du bruger de beskrevne forklarende variable.}}\label{opgave-1---opstil-en-lineuxe6r-regressionsmodel-for-hvor-du-bruger-de-beskrevne-forklarende-variable.}}
+
+\hypertarget{a---estimer-modellen-vha.-ols-og-kommenter-puxe5-resultaterne.}{%
+\subsubsection{(a) - Estimer modellen vha. OLS og kommenter på
+resultaterne.}\label{a---estimer-modellen-vha.-ols-og-kommenter-puxe5-resultaterne.}}
+
+MANGLER FORKLARING AF LPM + SVAGHEDER U ER PER DEFINITION
+HETEROSKEDASTIC - DER BRUGES ROBUST SE
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_ols }\OtherTok{=} \FunctionTok{lm}\NormalTok{(participation }\SpecialCharTok{\textasciitilde{}}\NormalTok{ income }\SpecialCharTok{+}\NormalTok{ age }\SpecialCharTok{+}\NormalTok{ agesq }\SpecialCharTok{+}\NormalTok{ educ }\SpecialCharTok{+}\NormalTok{ youngkids }\SpecialCharTok{+}\NormalTok{ oldkids }\SpecialCharTok{+}\NormalTok{ foreign, }\AttributeTok{data =}\NormalTok{ data)}
+\NormalTok{robust\_ols }\OtherTok{=} \FunctionTok{coeftest}\NormalTok{(model\_ols, }\AttributeTok{vcov =} \FunctionTok{vcovHC}\NormalTok{(model\_ols, }\AttributeTok{type =} \StringTok{"HC0"}\NormalTok{))}
+
+\FunctionTok{screenreg}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{OLS =}\NormalTok{ model\_ols, }\AttributeTok{OLS\_robust\_se =}\NormalTok{ robust\_ols), }\AttributeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## ========================================
+##              OLS           OLS_robust_se
+## ----------------------------------------
+## (Intercept)   -0.3686      -0.3686      
+##               (0.2530)     (0.2358)     
+## income        -0.0035 ***  -0.0035 ***  
+##               (0.0007)     (0.0006)     
+## age            0.0634 ***   0.0634 ***  
+##               (0.0129)     (0.0119)     
+## agesq         -0.0009 ***  -0.0009 ***  
+##               (0.0002)     (0.0001)     
+## educ           0.0068       0.0068      
+##               (0.0060)     (0.0059)     
+## youngkids     -0.2390 ***  -0.2390 ***  
+##               (0.0314)     (0.0302)     
+## oldkids       -0.0475 **   -0.0475 **   
+##               (0.0172)     (0.0175)     
+## foreign        0.2572 ***   0.2572 ***  
+##               (0.0401)     (0.0401)     
+## ----------------------------------------
+## R^2            0.1901                   
+## Adj. R^2       0.1836                   
+## Num. obs.    872                        
+## ========================================
+## *** p < 0.001; ** p < 0.01; * p < 0.05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#summary(model\_ols)}
+\end{Highlighting}
+\end{Shaded}
+
+Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke
+signifikant. INGEN FORSKEL PGA ROBUST SE
+
+\hypertarget{b---test-om-den-partielle-effekt-af-uddannelse-er-forskellig-fra-nul.}{%
+\subsubsection{(b) - Test om den partielle effekt af uddannelse er
+forskellig fra
+nul.}\label{b---test-om-den-partielle-effekt-af-uddannelse-er-forskellig-fra-nul.}}
+
+For at teste hvorvidt den partielle effekt af en variabel er forskellig
+fra nul bruges en t-test. Hvorvidt nulhypotesen afvises afhænger af den
+beregnede t-score og dertilhørende p-værdi \[H_0: \beta_4 = 0\]
+\[H_1: \beta_4 \neq 0\] T-scoren beregnes ud fra den estimerede
+\(\beta\) samt den tilhørende standardafvigelse. Dette kan gøres, da
+nulhypotesen er, at den faktiske værdi er nul, hvorfor dette led ikke
+indgår i formlen. \[t = \frac{\hat{\beta_j}}{se(\hat{\beta_j})}\] I
+nedenstående vil de robuste standardafvigelser blive benyttet til
+udregningen af t-scoren
+
+\begin{verbatim}
+## Kritisk værdi ved 5% =  1.9626913
+\end{verbatim}
+
+\begin{verbatim}
+## Kritisk værdi vec 1% =  2.5814857
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{t }\OtherTok{=} \FloatTok{0.0068}\SpecialCharTok{/}\FloatTok{0.0059}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## t-score =  1.1525424
+\end{verbatim}
+
+\hypertarget{c---test-om-den-partielle-effekt-af-alder-er-forskellig-fra-nul.}{%
+\subsubsection{(c) - Test om den partielle effekt af alder er forskellig
+fra
+nul.}\label{c---test-om-den-partielle-effekt-af-alder-er-forskellig-fra-nul.}}
+
+T-test?
+
+\hypertarget{opgave-2---opstil-buxe5de-en-logit--og-en-probit-model-for-par-t-i-cipat-ion-hvor-du-bruger-de-beskrevne-forklarende-variable.}{%
+\subsection{Opgave 2 - Opstil både en logit- og en probit-model for par
+t i cipat ion hvor du bruger de beskrevne forklarende
+variable.}\label{opgave-2---opstil-buxe5de-en-logit--og-en-probit-model-for-par-t-i-cipat-ion-hvor-du-bruger-de-beskrevne-forklarende-variable.}}
+
+\hypertarget{a---estimer-modellerne.}{%
+\subsubsection{(a) - Estimer
+modellerne.}\label{a---estimer-modellerne.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{screenreg}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\StringTok{"LPM OLS"} \OtherTok{=}\NormalTok{ model\_ols, }\AttributeTok{Logit =}\NormalTok{ logit, }\AttributeTok{Probit =}\NormalTok{ probit))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## ====================================================
+##                 LPM OLS     Logit        Probit     
+## ----------------------------------------------------
+## (Intercept)      -0.37        -4.39 ***    -2.67 ***
+##                  (0.25)       (1.30)       (0.78)   
+## income           -0.00 ***    -0.02 ***    -0.01 ***
+##                  (0.00)       (0.00)       (0.00)   
+## age               0.06 ***     0.33 ***     0.20 ***
+##                  (0.01)       (0.07)       (0.04)   
+## agesq            -0.00 ***    -0.00 ***    -0.00 ***
+##                  (0.00)       (0.00)       (0.00)   
+## educ              0.01         0.04         0.02    
+##                  (0.01)       (0.03)       (0.02)   
+## youngkids        -0.24 ***    -1.18 ***    -0.71 ***
+##                  (0.03)       (0.17)       (0.10)   
+## oldkids          -0.05 **     -0.24 **     -0.14 ** 
+##                  (0.02)       (0.08)       (0.05)   
+## foreign           0.26 ***     1.19 ***     0.73 ***
+##                  (0.04)       (0.20)       (0.12)   
+## ----------------------------------------------------
+## R^2               0.19                              
+## Adj. R^2          0.18                              
+## Num. obs.       872          872          872       
+## AIC                         1032.15      1031.65    
+## BIC                         1070.32      1069.82    
+## Log Likelihood              -508.08      -507.83    
+## Deviance                    1016.15      1015.65    
+## ====================================================
+## *** p < 0.001; ** p < 0.01; * p < 0.05
+\end{verbatim}
+
+ESTIMATER FOR LOGIT OG PROBIT KAN IKKE FORTOLKES SOM DE ER
+
+\hypertarget{b---test-om-den-partielle-effekt-af-uddannelse-er-forskellig-fra-nul.-1}{%
+\subsubsection{(b) - Test om den partielle effekt af uddannelse er
+forskellig fra
+nul.}\label{b---test-om-den-partielle-effekt-af-uddannelse-er-forskellig-fra-nul.-1}}
+
+\hypertarget{c---test-om-den-partielle-effekt-af-alder-er-forskellig-fra-nul-vha.-et-likelihoodratio-test.}{%
+\subsubsection{(c) - Test om den partielle effekt af alder er forskellig
+fra nul vha. et
+likelihoodratio-test.}\label{c---test-om-den-partielle-effekt-af-alder-er-forskellig-fra-nul-vha.-et-likelihoodratio-test.}}
+
+\hypertarget{opgave-3---vi-vil-gerne-sammenligne-den-partielle-effekt-af-puxe5-tvuxe6rs-af-modellerne.-beregn-average-partial-effect-ape-og-kommenter-puxe5-resultaterne.}{%
+\subsection{\texorpdfstring{Opgave 3 - Vi vil gerne sammenligne den
+partielle effekt af \textit{income} på tværs af modellerne. Beregn
+average partial effect (APE) og kommenter på
+resultaterne.}{Opgave 3 - Vi vil gerne sammenligne den partielle effekt af  på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.}}\label{opgave-3---vi-vil-gerne-sammenligne-den-partielle-effekt-af-puxe5-tvuxe6rs-af-modellerne.-beregn-average-partial-effect-ape-og-kommenter-puxe5-resultaterne.}}
+
+BRUGER ROBUST SE
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ape\_logit }\OtherTok{=} \FunctionTok{logitmfx}\NormalTok{(logit, }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{atmean=}\NormalTok{F, }\AttributeTok{robust =}\NormalTok{ T)}
+
+\FunctionTok{screenreg}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{ape\_logit =}\NormalTok{ ape\_logit), }\AttributeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## =============================
+##                 ape_logit    
+## -----------------------------
+## income            -0.0046 ***
+##                   (0.0010)   
+## age                0.0657 ***
+##                   (0.0139)   
+## agesq             -0.0009 ***
+##                   (0.0002)   
+## educ               0.0077    
+##                   (0.0060)   
+## youngkids         -0.2350 ***
+##                   (0.0403)   
+## oldkids           -0.0470 ** 
+##                   (0.0176)   
+## foreign            0.2466 ***
+##                   (0.0409)   
+## -----------------------------
+## Num. obs.        872         
+## Log Likelihood  -508.0766    
+## Deviance        1016.1533    
+## AIC             1032.1533    
+## BIC             1070.3196    
+## =============================
+## *** p < 0.001; ** p < 0.01; * p < 0.05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ape\_logit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## logitmfx(formula = logit, data = data, atmean = F, robust = T)
+## 
+## Marginal Effects:
+##                  dF/dx    Std. Err.        z           P>|z|    
+## income    -0.004610926  0.001012942 -4.55201 0.0000053135052 ***
+## age        0.065744335  0.013887098  4.73420 0.0000021991793 ***
+## agesq     -0.000929881  0.000175837 -5.28832 0.0000001234475 ***
+## educ       0.007705869  0.006036510  1.27654       0.2017634    
+## youngkids -0.235006974  0.040327957 -5.82740 0.0000000056299 ***
+## oldkids   -0.046973245  0.017550880 -2.67640       0.0074417 ** 
+## foreign    0.246583549  0.040923752  6.02544 0.0000000016865 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## dF/dx is for discrete change for the following variables:
+## 
+## [1] "foreign"
+\end{verbatim}
+
+\hypertarget{opgave-4---vi-vil-gerne-sammenligne-den-partielle-effekt-af-puxe5-tvuxe6rs-af-modellerne.-beregn-ape-og-kommenter-puxe5-resultaterne.}{%
+\subsection{\texorpdfstring{Opgave 4 - Vi vil gerne sammenligne den
+partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE
+og kommenter på
+resultaterne.}{Opgave 4 - Vi vil gerne sammenligne den partielle effekt af  på tværs af modellerne. Beregn APE og kommenter på resultaterne.}}\label{opgave-4---vi-vil-gerne-sammenligne-den-partielle-effekt-af-puxe5-tvuxe6rs-af-modellerne.-beregn-ape-og-kommenter-puxe5-resultaterne.}}
+
+\hypertarget{opgave-5---hvorfor-er-ape-at-foretruxe6kke-frem-for-partial-effect-at-the-average-pea}{%
+\subsection{Opgave 5 - Hvorfor er APE at foretrække frem for partial
+effect at the average
+(PEA)?}\label{opgave-5---hvorfor-er-ape-at-foretruxe6kke-frem-for-partial-effect-at-the-average-pea}}
+
+\hypertarget{opgave-6---sammenlign-modellernes-evne-til-at-pruxe6diktere-ved-at-beregne-percent-correctly-predicted-for-hver-model.}{%
+\subsection{Opgave 6 - Sammenlign modellernes evne til at prædiktere ved
+at beregne percent correctly predicted for hver
+model.}\label{opgave-6---sammenlign-modellernes-evne-til-at-pruxe6diktere-ved-at-beregne-percent-correctly-predicted-for-hver-model.}}
+
+\end{document}
