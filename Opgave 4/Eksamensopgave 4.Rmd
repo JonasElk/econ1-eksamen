@@ -6,7 +6,7 @@ header-includes:
     - \usepackage{setspace}\onehalfspacing
 ---
 
-```{r setup, include=FALSE}
+```{r setup4, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
@@ -22,6 +22,7 @@ library(AER)
 library(lmtest)
 library(sandwich)
 library(texreg)
+library(mfx)
 options(digits = 8)
 options(scipen = 999)
 rm(list=ls())
@@ -37,44 +38,113 @@ data = read.csv("data4.csv")
 ## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
+For at estimere modellen bruges der her brug af LPM, som står for "Linear probability model". LPM bruges da den afhængige variabel "participation" er en binær variabel, hvorfor den kun kan tage værdierne 0 og 1. Hertil betyder 1 deltagelse og 0 betyder ikke-deltagelse. 
+Sandsynligheden for "succes" ($participation = 1$) er givet ved middelværdien for ($E(y)$). Dermed kan modellen opstilles som $$P(y = 1|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5 + \beta_6 x_6 + \beta_7 x_7 + u$$. Hertil er den estimeret model givet ved $$\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat {\beta_2} x_2 + \hat{\beta_3} x_3 + \hat{\beta_4} x_4 + \hat{\beta_5} x_5 + \hat{\beta_6} x_6 + \hat{\beta_7} x_7 + u$$. Her angiver de forskellige $\beta$'er ændringen i sandsynligheden for "succes" (under antagel) 
+MANGLER FORKLARING AF LPM + SVAGHEDER
+U ER PER DEFINITION HETEROSKEDASTIC - DER BRUGES ROBUST SE
 ```{r}
 model_ols = lm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, data = data)
-summary(model_ols)
+robust_ols = coeftest(model_ols, vcov = vcovHC(model_ols, type = "HC0"))
+
+screenreg(list(OLS = model_ols, OLS_robust_se = robust_ols), digits = 4)
+#summary(model_ols)
 ```
-Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke signifikant. 
+Alle signifikante på 0,1\% pånær oldkids på 1\% og educ er ikke signifikant.
+INGEN FORSKEL PGA ROBUST SE
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+For at teste hvorvidt den partielle effekt af en variabel er forskellig fra nul bruges en t-test. Hvorvidt nulhypotesen afvises afhænger af den beregnede t-score og dertilhørende p-værdi
+$$H_0: \beta_4 = 0$$
+$$H_1: \beta_4 \neq 0$$
+T-scoren beregnes ud fra den estimerede $\beta$ samt den tilhørende standardafvigelse. Dette kan gøres, da nulhypotesen er, at den faktiske værdi er nul, hvorfor dette led ikke indgår i formlen.
+$$t = \frac{\hat{\beta_j}}{se(\hat{\beta_j})}$$
+I nedenstående vil de robuste standardafvigelser blive benyttet til udregningen af t-scoren.
+```{r, echo = F}
+cat("Kritisk værdi ved 5% = ",qt(1-0.025, df=length(data$educ)-1))
+cat("Kritisk værdi vec 1% = ",qt(1-0.005, df=length(data$educ)-1))
+```
+```{r}
+t = 0.0068/0.0059
+```
+```{r, echo = F}
+cat("t-score = ", t)
+```
+Da t-scoren er under den kritiske værdi kan $H_0$ ikke afvises. Det samme vil ses i beregningen af p-værdien nedenfor.
+```{r, echo = F}
+p = 2*(1-pt(t, df=length(data$educ)-1))
+cat("P-værdi = ", p)
+```
+Da p-værdien er højere end det den fastsatte grænse på 5\% er resultatet ikke statistisk signifikant. Først ved en grænse tilsvarende p-værdien eller højere vil nulhypotesen forkastes.
+
 
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul.
+For at teste hvorvidt alder er statistisk signifikant i modellen bruges en F-test, da alder indgår flere gange, eftersom den kvadrerede alder også er med. 
+
+```{r}
+linearHypothesis(model_ols, c("age=0", "agesq=0"))
+```
 
 
-## Opgave 2 - Opstil både en logit- og en probit-model for par t i cipat ion hvor du bruger de beskrevne forklarende variable.
+## Opgave 2 - Opstil både en logit- og en probit-model for \textit{participation} hvor du bruger de beskrevne forklarende variable.
+MANGLER TEKST OM LOGIT OG PROBIT
 
 ### (a) - Estimer modellerne.
-```{r}
-logit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "logit"),data = data)
+```{r, include = F}
+logit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "logit"), data = data)
+```
+
+```{r, include = F}
+probit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "probit"), data = data)
 ```
 
 ```{r}
-probit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, family = binomial(link = "probit"),data = data)
+screenreg(list("LPM OLS" = model_ols, Logit = logit, Probit = probit), digits = 4)
 ```
-
-```{r}
-screenreg(list("LPM OLS" = model_ols, Logit = logit, Probit = probit))
-```
-Samme signifikansniveau for alle pånær intercept. Forskel i estimater
+Effekten af disse estimater kan ikke direkte aflæses for logit- og probit-regressionerne, grundet den funktion der bruges i disse regressionsmetoder. Dog kan de stadig benyttes til at se signifikansniveau samt fortegn for effekten af variablen. Dermed er $educ$ ikke signifikant i nogle af modellerne, mens de alle har samme fortegn for estimaterne.
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
+Her benyttes igen en t-test som i forrige opgave. Igen opstilles følgende hypoteser.
+$$H_0: \beta_4 = 0$$
+$$H_1: \beta_4 \neq 0$$
+```{r}
+t_logit = 0.0386/0.0302
+t_probit = 0.0231/0.0181
+```
+```{r, echo = F}
+cat("t-score for logit = ", t_logit)
+cat("t-score for probit = ", t_probit)
+```
+Da t-værdien for både logit- og probit-regressionen er under den kritiske værdi ved et signifikansniveau på 5\% forkastes $H_0$, hvorfor estimatet i begge tilfælde er statistisk signifikant.
+```{r}
+p_logit = 2*(1-pt(t_logit, df=length(data$educ)-1))
+p_probit = 2*(1-pt(t_probit, df=length(data$educ)-1))
+```
+```{r}
+cat("P-værdi for logit = ", p_logit)
+cat("P-værdi for probit = ", p_probit)
+```
+Her ses igen en højere p-værdi end det fastsatte signifikansniveau på 5\%, hvilket ligeledes betyder, at $H_0$ kan forkastes. Først ved et signifikansniveau over p-værdien vil $H_0$ ikke kunne forkastes 
+
+
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul vha. et likelihoodratio-test.
 
+
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
+BRUGER ROBUST SE
 ```{r}
-income_ape_logit = logitmfx
+ape_logit = logitmfx(logit, data = data, atmean=F, robust = T)
+
+screenreg(list(ape_logit = ape_logit), digits = 4)
+ape_logit
 ```
 
 
 ## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE og kommenter på resultaterne.
+```{r}
+```
+
 
 ## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
 
 ## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
+

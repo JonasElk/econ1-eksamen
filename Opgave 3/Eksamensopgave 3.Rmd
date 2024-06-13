@@ -6,7 +6,7 @@ header-includes:
     - \usepackage{setspace}\onehalfspacing
 ---
 
-```{r setup, include=FALSE}
+```{r setup3, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
 library(tidyverse)
@@ -65,6 +65,7 @@ Inkluderes meduc, feduc og siblings som instrumentvariable for educ, er V insign
 
 
 ## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
+MANGLER TEKST TIL 2SLS
 ```{r}
 educ_fitted = fitted(red_model)
 
@@ -81,6 +82,7 @@ screenreg(list(OLS = model, two_SLS = sls), digits = 4)
 MANGLER SAMMENLIGNING MED OPGAVE 1
 
 ## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
+<<<<<<< HEAD
 
 Overidentifikationstest udføres hvis man har flere instrumentale variable end endogene variable. I opgave 5 anvendes 3 instrumentale variable til den endogene variabel educ, hvorfor man bør teste for om de tre IV'er overhovedet har indflydelse på educ, og om de i så fald er statistisk ens. 
 For at teste for overidentifikation anvendes residualerne fra 2SLS i opgave 5. Residualerne regreres herefter på alle exogene variable, inklusiv instrumenterne, hvorfra man kan få $R^2_1$. 
@@ -88,6 +90,9 @@ Herefter opstilles hypotesen, at alle IV'er gyldige: $H_0: corr(IV,u)=0 $ Ved at
 Hvis nulhypotesen ikke kan afvises, er overidentifikationstesten bestået. Det vil betyde at alle instrumenterne er gyldige og modellen er præcist identificeret. Afvises $H_0$ på noget som helst signifikansniveau, da vil minimum 1 af IV'erne have endogenitetsproblemer. 
 
 TESTEN SKAL UDFØRES
+=======
+MANGLER. Lektion 13. IM STILL CONFUSED
+>>>>>>> d6c6d1ac6ddf6e6b02b54c15adfdfb72933f6d13
 
 ## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
 ```{r}

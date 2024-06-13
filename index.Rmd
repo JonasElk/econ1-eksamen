@@ -1,0 +1,37 @@
+---
+title: |
+  ![](logo.png){width=2.5in}  
+  Økonometrieksamen
+author: "Sofie Teisen, Rebekka Hansen, Josefine Østergaard, Jonas Elkjær"
+date: "`r format(Sys.Date(), '%d. %B %Y')`"
+output: 
+  pdf_document:
+toc-title: "Indholdsfortegnelse"
+header-includes:
+    - \usepackage{setspace}\onehalfspacing
+---
+
+\newpage
+```{=latex}
+\setcounter{tocdepth}{4}
+\tableofcontents
+```
+\newpage
+
+```{r child = 'Opgave 1/Eksamensopgave 1.Rmd'}
+```
+
+\newpage
+
+```{r child = 'Opgave 2/Eksamensopgave 2.Rmd'}
+```
+
+\newpage
+
+```{r child = 'Opgave 3/Eksamensopgave 3.Rmd'}
+```
+
+\newpage
+
+```{r child = 'Opgave 4/Eksamensopgave 4.Rmd'}
+```
