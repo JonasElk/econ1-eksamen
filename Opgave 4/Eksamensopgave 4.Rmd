@@ -37,18 +37,21 @@ data = read.csv("data4.csv")
 ## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
+For at estimere modellen gøres der brug af LPM, som står for "Linear probability model". LPM bruges da den afhængige variabel "participation" er en binær variabel, hvorfor den kun kan tage værdierne 0 og 1. Hertil betyder 1 deltagelse og 0 betyder ikke-deltagelse. Sandsynligheden for "succes" ($participation = 1$) er givet ved middelværdien for ($E(y)$). Dermed kan modellen opstilles som $$P(y = 1|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5 + \beta_6 x_6 + \beta_7 x_7 + u$$Hertil er den estimeret model givet ved $$\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat {\beta_2} x_2 + \hat{\beta_3} x_3 + \hat{\beta_4} x_4 + \hat{\beta_5} x_5 + \hat{\beta_6} x_6 + \hat{\beta_7} x_7 + u$$Her angiver de forskellige $\beta$'er ændringen i sandsynligheden for "succes" (under antagelse at andre faktorer holdes fast) ved en ændring i den pågældende variabel med en enhed. Dog er problematikken her at når værdierne for de uafhængige variable indsættes i modellen, vil man til et punkt nå at y enten er under 0 eller over 1, hvilket vil sige at sandsynligheden enten er negativ eller eller over 100\%.
 
-For at estimere modellen bruges der her brug af LPM, som står for "Linear probability model". LPM bruges da den afhængige variabel "participation" er en binær variabel, hvorfor den kun kan tage værdierne 0 og 1. Hertil betyder 1 deltagelse og 0 betyder ikke-deltagelse. Sandsynligheden for "succes" ($participation = 1$) er givet ved middelværdien for ($E(y)$). Dermed kan modellen opstilles som $$P(y = 1|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5 + \beta_6 x_6 + \beta_7 x_7 + u$$. Hertil er den estimeret model givet ved $$\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat {\beta_2} x_2 + \hat{\beta_3} x_3 + \hat{\beta_4} x_4 + \hat{\beta_5} x_5 + \hat{\beta_6} x_6 + \hat{\beta_7} x_7 + u$$. Her angiver de forskellige $\beta$'er ændringen i sandsynligheden for "succes" (under antagel) MANGLER FORKLARING AF LPM + SVAGHEDER U ER PER DEFINITION HETEROSKEDASTIC - DER BRUGES ROBUST SE
+For LPM gælder det hovedsageligt, at modellen er retvisende når værdierne for de uafhængige variable er tæt på middelværdien. På grund af, at der nødvendigvis er et binært element i LPM, er MLR-antagelsen om homoskedasticitet ikke overholdt. Dermed kan F-test og t-test ikke bruges som normal vis, da variancen for fejlledet ikke er konstant som resultat af heteroskedasticitet, hvorfor estimatorvariancerne er biased. I det følgende vil standardafivigelserne altså blive justeret, hvortil "robust standard errors" udregnes.
 
 ```{r}
 model_ols = lm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, data = data)
-robust_ols = coeftest(model_ols, vcov = vcovHC(model_ols, type = "HC0"))
+robust_ols = coeftest(model_ols, vcov = vcovHC(model_ols, type = "HC0")) #robuste standard afvigelser
 
 screenreg(list(OLS = model_ols, OLS_robust_se = robust_ols), digits = 4)
 #summary(model_ols)
 ```
-
-Alle signifikante på 0,1% pånær oldkids på 1% og educ er ikke signifikant. INGEN FORSKEL PGA ROBUST SE
+Alle estimaterne er signifikante på 0,1\%, med undtagelse af "oldkids" som er signifikant på 1\% samt "intercept" og "educ" som begge ikke er signifikante. 
+Der er ikke forskel på estimaterne i det der er blevet brugt robuste standard afvigelser for modellen.
+Én enheds stigning i det enkelte estimat angiver påvirkningen på den samlede sandsynlighed for "participation". Eksempelvis betyder estimatet "age", at ved at alderen stiger med en enhed, vil sandsynligheden for "participation" stige med 6\%
+Det enkelte estimat angiver påvirkningen på sandsynligheden ved en enheds stigning 
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
 
@@ -67,6 +70,7 @@ t = 0.0068/0.0059
 cat("t-score = ", t)
 ```
 
+<<<<<<< HEAD
 Da t-scoren er under den kritiske værdi kan $H_0$ ikke forkastes. Det samme vil ses i beregningen af p-værdien nedenfor.
 
 ```{r, echo = F}
@@ -161,6 +165,7 @@ cat("P-værdi = ", as.numeric(p_probit))
 
 Her findes der igen en meget lav p-værdi, og alder i derfor ligeledes forskellig fra nul i denne model, da nulhypotesen om insignifikans forkastes.
 
+
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
 
 BRUGER ROBUST SE
@@ -190,6 +195,7 @@ lcoef <- logit$coefficients
 mean(pnorm(cdata1 %*% lcoef) - pnorm(cdata2 %*% lcoef))
 ```
 
+<<<<<<< HEAD
 
 ```{r}
 cdata <- cbind(1, as.matrix(data[, c("income", "age", "agesq", "educ", "youngkids", "oldkids",
@@ -219,3 +225,7 @@ names(PCP) <- c("LPM PCP","Logit PCP","Probit PCP")
 PCP
 ```
 MANGLER FORTOLKNING
+=======
+## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
+
+## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
