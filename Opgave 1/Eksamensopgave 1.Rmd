@@ -72,18 +72,23 @@ Ovenstående er udført grafisk modelkontrol.
 
 ## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testen og specialudgaven af White-testen
 For at teste for heteroskedasticitet udføres BP-testen samt specialudgaven af White-testen. Her udføres BP-testen både manuelt og vha. funktionen i R. 
-BP-testen udføres ved at kvadrere fejlledet i den oprindelige regression, hvorefter denne opstilles som en funktion af de uafhængige variable fra den oprindelige regression. 
 
-FORMLER FOR BP
+BP-testen udføres ved at kvadrere fejlledet i den oprindelige regression, hvorefter denne opstilles som en funktion af de uafhængige variable fra den oprindelige regression. Ligningen for Breusch-Pagan testen er givet ved:
+
+$$\hat{u}_i^2=\alpha_0+\alpha_1x_{i1}+\alpha_2x_{i2}+...+\alpha_kx_{ik}+v_i$$
 
 Der udføres en F-test eller LM-test for at estimere p-værdien, og hvis denne er under det valgte signifikansniveau afvises nulhypotesen.
 $$H_0: homoskedasticitet$$
 Hvis p-værdien er lav i BP-testen/F-test vil $H_0$ afvises hvorfor der antages at være heteroskedasticitet.
 
 
-White-testen udføres også ved at opstille en regression for det kvadreret fejlled. Dog opstilles denne med de uafængige variable, de kvadrerede uafhængige variable samt krydsprodukterne af de uafhængige variable. Igen udføres en F-test eller LM-test for at vurdere hvorvidt nulhypotesen afvises eller accepteres. 
+White-testen udføres også ved at opstille en regression for det kvadreret fejlled. Dog opstilles denne med de uafængige variable, de kvadrerede uafhængige variable samt krydsprodukterne af de uafhængige variable. Igen udføres en F-test eller LM-test for at vurdere hvorvidt nulhypotesen afvises eller accepteres. Formelen for white-testen ved tre variable er givet ved: 
 
-MANGLER TEKST OM SPECIALUDGAVE AF WHITE
+$$\hat{u}^2 = \delta_0+\delta_1x_1+\delta_2x_2+\delta_3x_3+\delta_4x^2_1+\delta_5x^2_2+\delta_6x^2_3+\delta_7x_1x_2+\delta_8x_1x_3+\delta_9x_2x_3+error$$
+Special udgaven af White-testen minder i høj grad om den ovenstående metode, men er langt mere simpel. Denne er givet ved formelen: 
+
+$$\hat{u}^2=\delta_0+\delta_1\hat{y}+\delta_2\hat{y}+error$$
+
 ```{r}
 u = resid(model1)
 u2 = u^2
@@ -115,7 +120,7 @@ lm_chi = 0.022954*474 #BP-test
 Igen afvises nulhypotesen i F-testen og der antages derfor at være heteroskedasticitet, hvilket også gælder når $\chi^2$ bruges og dermed en BP-test. Både $\hat{y}$ og $\hat{y}^2$ er signifikante i testen, så det kan ikke siges hvorvidt der er et lineært eller ikke-lineært forhold.
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
-MANGLER FORKLARING AF ROBUSTE SE
+Robuste standartfejl er en metode som kan korrigere standartfejlene i en regressionsmodel, hvor der tages højde for heteroskedasticitet. Metoden kan sikre at inferens er korrekt, i situationer hvor antagelsen om homoskedasticitet er urelaistisk. 
 ```{r}
 model1robust <- coeftest(model1, vcov = vcovHC(model1, type = "HC0"))
 screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
@@ -123,7 +128,9 @@ screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
 Den venstre kolonne udgør resultaterne fra opgave 1, mens den højre kolonne viser samme estimater men med robuste standardafvigelser. Der findes en lille ændring i signifikansniveauet, hvor "minority" er signifikant på et højere niveau, hvilket skyldes den lavere standardafvigelse. 
 
 ## Opgave 5 - Test hypotesen H0: $\beta_2 = 1$ mod alternativet H1: $\beta_2 \neq 1$
-MÅSKE NOGET OM T-FORDELING
+
+T-fordelingen er også kendt som "student's t-fordeling", og er en sandsynlighedsfordeling. Den bruges ofte til at estimere en populaitons middelværdi, ved en lav stikprøvestørrelse, og hvor populationens standartafvigelse er ukendt. T-fordelingen ligner en normalfordeling, men den har "fatter tails", hvilket belyser, at der findes større sandsynlighed for ekstremværdier. 
+
 T-scoren beregnes med følgende formel
 $$T = \frac{\hat{\beta}_j-\beta_j}{se(\hat{\beta}_j)}$$
 Her er $\hat{\beta_j}$ estimatet fra regressionen og $\beta_j$ er nulhypotesen, som i dette tilfælde er 1. Der vil i udregningen blive brugt robust standardafvigelser grundet den påviste heteroskedasticitet\\
@@ -143,8 +150,11 @@ De kritiske værdier for 5\% og og 1\% er henholdsvis 1,96 og 2,59 hvorfor $H_0$
 
 
 ## Opgave 6 - Test hypotesen H0: $\beta_3 = \beta_4 = 0$
-F-test
-MANGLER FORKLARING OM F-TEST
+F-testen benyttes ofte til at sammenligne varians mellem flere grupper. F-test kan også bruge til at test om flere koefficienter er lig nul. I dette tilfælde opstilles den ovenstående nulhypotese. Følgende formel bruges til, at konkludere hvorvidt nulhypotesen afvises eller ej: 
+$$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
+
+FORMEL
+
 ```{r}
 linearHypothesis(model1, c("male=0", "minority=0"))
 #model1a = lm(logsal ~ educ+logbegin)
@@ -152,17 +162,18 @@ linearHypothesis(model1, c("male=0", "minority=0"))
 ```
 RSS (kan også kaldes SSR) beskriver residual sum of squares, som er summen af de estimeret fejlled sat i anden, og hvis SSR = 0 er modellen perfekt ($R^2=1$).
 
-FORMEL FOR SSR
+$$SSR=\sum_\limits{i=n}^{n}(\hat{u}_i)^2 $$
 
 Den meget lave p-værdi, som tilnærmelsesvist er nul, gør at H0 kan afvises. Dette betyder, at estimaterne "male" eller "minority" er "jointly significant" og dermed i fællesskab forskellig fra 0.
 
-For at beregne F-statistic, kan der gøres brug af følgende formel: 
-$$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
+For at beregne F-statistic, kan der gøres brug af formlen for f-test, som er beskrevet ovenstående.
 Her angiver $r$ den begrænsede model, hvor $\beta_3 = \beta_4 = 0$, mens $ur$ angiver den ubegrænsede model hvor alle variable indgår. $q$ er forskellen i frihedsgrader mellem de to modeller. $(n-k-1)$ er antal frihedsgrader i den ubegrænset model, hvor $n$ er antal observationer og $k$ er antal variable i modellen.\\
 Jf. ovenstående er F-værdien 22.6445, hvilket giver en lav p-værdi, hvorfor nulhypotesen, hvor $\beta_3$ og $\beta_4$ er lig med nul, afvises. Derfor vil mindst et af de to estimater have relevans for modellen.
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
-MANGLER TEKST TIL FGLS
+
+FGLS er en forkortelse for Feasible Generalised Least Square. Dette er en metode, som bruges til at estimere parameterne i en lineære regressionsmodel, når der findes heteroskedasticitet. Fra tidligere vides det, at OLS-estimaterne er BLUE under forudsætningerne om, at fejledende har konstant varians (homoskedasticitet) og der ikke findes seriekorrelation. Holder disse forudsætninger ikke, bliver OLS estimaterne inefficiente og standartfejlene upålidelige. Det er i disse tilfælde, at FGLS-metoden spiller en rolle. Formålet med denne metide er nemlig at transformere modellen, så fejledene i den transformeret model opfylder kravene for OLS. 
+
 ```{r}
 logu2 <- log(resid(model1)^2) #Her gøres alt i en command
 varreg<-lm(logu2 ~ educ+logbegin+male+minority)
@@ -175,8 +186,8 @@ Det ses hvordan alle koefficienter er statistisk signifikante på 0,1\%. Desuden
 ```{r}
 screenreg(list(OLS = model1, FGLS = model2fgls), digits = 4)
 ```
-MANGLER SAMMENLIGNING MED OLS
-
+I ovenstående model ses det, at FGLS er signifikant på et højere niveau en OLS - dette skyldes en lavere standartafvigelse. Der ses også en mindre forskel i værdien for $R^2$. 
+Desuden findes der en mindre afvigelse på 1 procentpoint ved "education", hvor denne er højest ved OLS. Der ses ligeledes en mindre afvigelse for "male" på 2 procentpoint - denne er ligeledes højest ved OLS. 
 
 ## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
 
