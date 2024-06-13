@@ -70,7 +70,6 @@ t = 0.0068/0.0059
 cat("t-score = ", t)
 ```
 
-<<<<<<< HEAD
 Da t-scoren er under den kritiske værdi kan $H_0$ ikke forkastes. Det samme vil ses i beregningen af p-værdien nedenfor.
 
 ```{r, echo = F}
