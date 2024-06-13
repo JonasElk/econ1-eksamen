@@ -137,19 +137,24 @@ reset(model2educ)
 Der er højere p-værdier i begge, hvorfor de nu begge er insignifikante på 15% og under. Dermed er begge modeller nu ikke misspecificeret på noget relevant signifikansniveau. Dog er hverken $educ$ eller $educ^2$ signifikante på 5\% i model 2.
 
 ## Opgave 5 - Test hypotesen $H0 : \beta_1 = \beta_5 = 0$ i begge modeller (fra spørgsmål 4).
-MANGLER TEKST
+F-testen benyttes ofte til at sammenligne varians mellem flere grupper. F-test kan også bruge til at test om flere koefficienter er lig nul. I dette tilfælde opstilles den ovenstående nulhypotese. Følgende formel bruges til, at konkludere hvorvidt nulhypotesen afvises eller ej: 
+$$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
 ```{r}
 linearHypothesis(model1educ, c("educ=0", "educ2=0"))
 #model1a = lm(logsal ~ educ+logbegin)
 #waldtest(model1, model1a)
+```
 
+I dette tilfælde er p-værdien ekstremt lille, og derfor forkastes nulhypotesen. Desuden indikere den høje F-værdi på 23.56, at de to variable "educ" og "educ2" har signifikant indflydelse på lønnen, som i dette tilfælde er den afhængeige variable. 
+
+```{r}
 linearHypothesis(model2educ, c("educ=0", "educ2=0"))
 #model1a = lm(logsal ~ educ+logbegin)
 #waldtest(model1, model1a)
 ```
-Lav p-værdi, så nulhypotese forkastes og $\beta_1$ og $\beta_5$ er derfor fælles signifikant
 
-MANGLER FORTOLKNING
+Også ved denne model ses en lav p-værdi, og derfor forkastes nulhypotesen. Igen indikere den høje F-værdi på 18.94, at variablene "educ" og "educ2" har signifikant indflydelse på log løn. Dog er F-værdien i dette tilfælde mindre end ovenfor.
+
 
 ## Opgave 6 - Kunne der være problemer med målefejl i de to modeller? I hvilke tilfælde vil det udgøre et problem?
 Hvis den afhængige variabel, i dette tilfælde lønnen, har problemer med målefejl, vil dette komme til udtryk i fejlleddet i regressionen. Da lønnen, i tilfælde af målefejl, er den faktiske løn fratrukket dets fejlled, vil fejlleddet i regressionen være summen af det oprindelige fejlled, u, og målefejlen $e_0$. Det vil ikke skabe et problem så længe det oprindelige fejlled og målefejlen ikke er korreleret med nogle af de uafhængige variable, da det ellers vil skabe en bias i estimaterne.

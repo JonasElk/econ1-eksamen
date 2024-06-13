@@ -34,24 +34,26 @@ data = read.csv("data3.csv")
 
 # Eksamenssæt 3: Instrumentvariable
 
-## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne    
+## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne 
+
+Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved $$SSR = \sum_\limits{i=n}^{n}(\hat{u}_i)^2$$. Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
+$$min_\beta\sum_\limits{i=n}^{n}(y_i-\hat{y_i})$$
+Hvor $y_i$ er den observerede værdi og $\hat{y_i}$ er den estimerede værdi af modellen.
+
 ```{r}
 model = lm(learnings ~ educ + exp + male + ethblack + ethhisp, data)
 summary(model)
 ```
-hispanics er insignifikant med p-værdi på 33,2\%
-Resten er på 1\% eller lavere
-Relativ lav $R^2$
-F-test med meget lav p-værdi - Variable er "jointly significant"
+I ovenstående model ses det hvordan hispanics, som den eneste variabel, er insignifikant med p-værdi på 33,2\%. De resterne værdier er på 1\% eller lavere. Desuden er p-værdien meget lav, og dermed fortæller F-testen, at variablene er "jointly significant". Afslutningsvist ses det hvordan $R^2$ er relativt lav. 
 
 ## Opgave 2 - Hvorfor kunne vi være bekymrede for at uddannelse er endogen? 
-Uddannelse vil være endogen hvis den er korreleret med en udeladt variabel som derfor skaber en bias. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker uddannelsesniveauet positivt og dermed skaber en bias, eller forældrenes uddannelsesniveau. Ligeledes kan antallet af søskende have en negativ effekt på uddannelsesniveauet. 
+Uddannelse vil være endogen hvis den er korreleret med en udeladt variabel som derfor skaber en bias. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker uddannelsesniveauet positivt og dermed skaber en bias. Ligeledes kan forældrenes uddannelsesniveau eller antallet af søskende være korreleret med uddannelsesniveauet. 
 
 ## Opgave 3 - Er siblings, meduc og feduc brugbare som instrumenter?
-Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korreleret med den udeladte variabel, som i dette tilfælde er "ability", vil de være egnet som instrumenter. Det kan formentlig antages, at forældre uddannelse eller antal søskende uddannelse ikke har indflydelse på "ability", hvorfor denne betingelse til instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau formentlig delvist korreleret med den pågældendes uddannelse, mens antal søskende ikke i samme grad antages at være korreleret med uddannelsesniveauet. Derfor vil forældres uddannelse formentlig være bedre instrumenter end antal søskende.
+Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korreleret med den udeladte variabel, som i dette tilfælde er "ability", vil de være egnet som instrumenter. Det kan formentlig antages, at forældres uddannelse eller antal søskende ikke har indflydelse på "ability", hvorfor denne betingelse til instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau formentlig delvist korreleret med den pågældendes uddannelse, mens antal søskende ikke i samme grad antages at være korreleret med uddannelsesniveauet. Derfor vil forældres uddannelse formentlig være bedre instrumenter end antal søskende, men det kan ikke udelukkes at begge kan have indflydelse på uddannelsesniveauet.
 
 ## Opgave 4 - Test om uddannelse er endogen
-Testen for endogenitet laves vha. den reduceret ligning, som er variablen mistænkt for endogenitetsproblemer regresseret på de øvrige uafhængige variable og instrumentvariablene. Heri er variablen eksogen, altså ukorreleret med det oprindelige fejlled ($u$), hvis og kun hvis fejlleddet fra den reducerede ligning ($v$) er ukorreleret med ($u$). Fejlleddet fra den reducerede ligning ($v$) er dog ikke observeret, hvorfor residualet bruges som proxy. Derfor inkluderes ($v$) i den oprindelige regresion, hvorefter en t-test bruges til teste hvorvidt den tilhørende estimator $\delta$ er signifikant. Hvis det findes, at $\delta$ ikke kan siges at være lig 0 er variablen endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen $H_0: \gamma = 0$ ikke kan afvises.
+Testen for endogenitet laves vha. den reducerede ligning, givet ved variablen mistænkt for endogenitetsproblemer regresseret på de øvrige uafhængige variable og instrumentvariablene. Heri er variablen eksogen, altså ukorreleret med det oprindelige fejlled ($u$), hvis fejlleddet fra den reducerede ligning ($v$) er ukorreleret med ($u$). Fejlleddet fra den reducerede ligning er dog ikke observeret, hvorfor residualet ($\hat{v}$) bruges som proxy. Derfor inkluderes ($\hat{v}$) i den oprindelige regression, hvorefter en t-test bruges til at teste, hvorvidt den tilhørende estimator $\delta$ er signifikant forskellig fra nul. Hvis det findes, at $\delta$ ikke kan siges at være lig 0 er den mistænkte variabel endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen $H_0: \gamma = 0$ ikke kan afvises.
 ```{r}
 #Reduced form equation
 red_model = lm(educ ~ exp + male + ethblack + ethhisp + siblings + meduc + feduc, data)
@@ -61,7 +63,7 @@ v = resid(red_model)
 endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
 summary(endo_model)
 ```
-V er insignifikant, så der er ikke endogenitet??? Hvis siblings fjernes er der endogenitet??? I'm confused
+I ovenstående inkluderes meduc, feduc og siblings som instrumentvariable for educ. Det ses at V (fejleddet) er insignifikant, hvilket indikerer, at educ ikke lider af endogenitet. 
 
 ## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
 MANGLER TEKST TIL 2SLS
@@ -69,6 +71,13 @@ MANGLER TEKST TIL 2SLS
 educ_fitted = fitted(red_model)
 
 linearHypothesis(red_model, c("meduc=0", "feduc=0", "siblings=0")) #Test at IVs er signifikante
+```
+
+
+
+FORKLARING AF TEST FOR, AT IVs ER SIGNIFIKANTE
+
+```{r}
 
 sls = lm(learnings ~ educ_fitted + exp + male + ethblack + ethhisp, data)
 #summary(sls)
@@ -79,8 +88,17 @@ screenreg(list(OLS = model, two_SLS = sls), digits = 4)
 #summary(sls_r)
 ```
 
+I ovenstående model ses det, at "ethblack" samt intercept ikke længere er signifikant ved 2SLS. Desuden ses der en ændring i $R^2$, hvor denne har størst værdi for OlS. De forskellige værdier ved henholdsvist "educ" og "educ_fitted" antyder, at modellen ved OLS estimationen har været negativ bias, og at der her har været endogenitetsproblemer.
+Dette belyser, hvordan det at inkludere de tre instrumentvariable meduc, feduc og siblings forbedre modellen betydeligt, da denne tager højde for potentielle endogenitet problemer. 
 
 ## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
+
+Overidentifikationstest udføres hvis man har flere instrumentale variable end endogene variable. I opgave 5 anvendes 3 instrumentale variable til den endogene variabel educ, hvorfor man bør teste for om de tre IV'er overhovedet har indflydelse på educ, og om de i så fald er statistisk ens. 
+For at teste for overidentifikation anvendes residualerne fra 2SLS i opgave 5. Residualerne regreres herefter på alle exogene variable, inklusiv instrumenterne, hvorfra man kan få $R^2_1$. 
+Herefter opstilles hypotesen, at alle IV'er gyldige: $H_0: corr(IV,u)=0 $ Ved at anvende $nR^2_1 \sim \chi^2_q$, hvor q er antallet af instrumentale variable fra udenfor modellen minus antallet det totale antal af endogene forklarende variable. 
+Hvis nulhypotesen ikke kan afvises, er overidentifikationstesten bestået. Det vil betyde at alle instrumenterne er gyldige og modellen er præcist identificeret. Afvises $H_0$ på noget som helst signifikansniveau, da vil minimum 1 af IV'erne have endogenitetsproblemer. 
+
+TESTEN SKAL UDFØRES
 MANGLER. Lektion 13. IM STILL CONFUSED
 
 ## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
