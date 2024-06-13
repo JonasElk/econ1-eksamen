@@ -56,7 +56,7 @@ $$H_0: \beta_4 = 0$$
 $$H_1: \beta_4 \neq 0$$
 T-scoren beregnes ud fra den estimerede $\beta$ samt den tilhørende standardafvigelse. Dette kan gøres, da nulhypotesen er, at den faktiske værdi er nul, hvorfor dette led ikke indgår i formlen.
 $$t = \frac{\hat{\beta_j}}{se(\hat{\beta_j})}$$
-I nedenstående vil de robuste standardafvigelser blive benyttet til udregningen af t-scoren
+I nedenstående vil de robuste standardafvigelser blive benyttet til udregningen af t-scoren.
 ```{r, echo = F}
 cat("Kritisk værdi ved 5% = ",qt(1-0.025, df=length(data$educ)-1))
 cat("Kritisk værdi vec 1% = ",qt(1-0.005, df=length(data$educ)-1))
