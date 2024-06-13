@@ -38,6 +38,8 @@ data = read.csv("data4.csv")
 ## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
+For at estimere modellen bruges der her brug af LPM, som står for "Linear probability model". LPM bruges da den afhængige variabel "participation" er en binær variabel, hvorfor den kun kan tage værdierne 0 og 1. Hertil betyder 1 deltagelse og 0 betyder ikke-deltagelse. 
+Sandsynligheden for "succes" ($participation = 1$) er givet ved middelværdien for ($E(y)$). Dermed kan modellen opstilles som $$P(y = 1|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5 + \beta_6 x_6 + \beta_7 x_7 + u$$. Hertil er den estimeret model givet ved $$\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat {\beta_2} x_2 + \hat{\beta_3} x_3 + \hat{\beta_4} x_4 + \hat{\beta_5} x_5 + \hat{\beta_6} x_6 + \hat{\beta_7} x_7 + u$$. Her angiver de forskellige $\beta$'er ændringen i sandsynligheden for "succes" (under antagel) 
 MANGLER FORKLARING AF LPM + SVAGHEDER
 U ER PER DEFINITION HETEROSKEDASTIC - DER BRUGES ROBUST SE
 ```{r}
