@@ -194,8 +194,6 @@ lcoef <- logit$coefficients
 mean(pnorm(cdata1 %*% lcoef) - pnorm(cdata2 %*% lcoef))
 ```
 
-<<<<<<< HEAD
-
 ```{r}
 cdata <- cbind(1, as.matrix(data[, c("income", "age", "agesq", "educ", "youngkids", "oldkids",
 "foreign")]))
@@ -224,7 +222,3 @@ names(PCP) <- c("LPM PCP","Logit PCP","Probit PCP")
 PCP
 ```
 MANGLER FORTOLKNING
-=======
-## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
-
-## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
