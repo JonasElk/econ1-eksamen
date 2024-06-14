@@ -86,7 +86,7 @@ Grundet den lave p-værdi afvises nulhypotesen om at den partielle effekt af ald
 
 ## Opgave 2 - Opstil både en logit- og en probit-model for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
-Logit- og probit-modeller anvendes til at modellere en binær afhængig variabel. Begge angiver sandsynligheden i intervallet $[0,1]$ for at variablen tager værdien 1, men forskellen ligger i funktionerne modellerne bygger på, og fortolkningen af de to modeller. 
+Logit- og probit-modeller anvendes til at modellere en binær afhængig variabel. Begge angiver sandsynligheden i intervallet $[0,1]$ for at variablen tager værdien 1, men forskellen ligger i funktionerne modellerne bygger på. 
 
 Begge modeller har opbygningen $$P(Y=1|X)=G(z)=G(\beta_0+\beta_1x_1+\cdots+\beta_jx_j)$$
 
@@ -96,9 +96,6 @@ Hvor $G$ angiver en funktion af regressionsmodellen. For en logit-model er denne
 For en probit-model er funktionen i stedet givet ved $$\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}exp(\frac{-z^2}{2})du$$
 
 Logit-modellen følger en logistisk regression, mens probit følger en normalfordeling. Fordelen ved disse modeller er, at sandsynligheden i modsætning til LMP er begrænset til intervallet 0-1.
-MANGLER TEKST OM LOGIT OG PROBIT
-
-JOOOOOONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSSSS
 
 
 ### (a) - Estimer modellerne.
@@ -159,8 +156,7 @@ cat("LR = ", as.numeric(lr_logit))
 cat("P-værdi = ", as.numeric(p_logit))
 ```
 
-
-Da p-værdien er under de normale signifikansniveauer på 5% og 1% forkastes nulhypotesen, hvorfor alder i denne regression er statistisk forskellige fra nul.
+Da p-værdien er under de normale signifikansniveauer på 5% og 1% forkastes nulhypotesen, hvorfor alder i denne regression er statistisk forskellig fra nul.
 
 Nedenfor laves samme test for probit-modellen.
 
@@ -175,23 +171,26 @@ cat("LR = ", as.numeric(lr_probit))
 cat("P-værdi = ", as.numeric(p_probit))
 ```
 
-
-Her findes der igen en meget lav p-værdi, og alder er derfor ligeledes forskellig fra nul i denne model, da nulhypotesen om insignifikans forkastes.
-
+Her findes der igen en meget lav p-værdi. Alder er derfor ligeledes forskellig fra nul i denne model, da nulhypotesen om insignifikans forkastes.
 
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
 
-FORKLARING AF APE
-BRUGER ROBUST SE
+APE bruges til at bestemme den gennemsnitlige effekt af en uafhængig variable på den afhængige variable i en model, hvor effekten kan variere på tværs af observationer. Dette er særligt relevant i modeller hvor logit og probit indgår, fordi den marginale effekt af en uafhængig variable på den afhængige variable i sådanne tilfælde ikke er konstant. Formlen for APE er givet nedenfor:
+$$A\hat{P}E_j=\hat{\beta}_j[n^{-1}\sum_{i=1}^{n}g(x_i\hat{\beta})]$$
+Til løsningen af opgaven bruges robuste standardfejl, hvilket er en metode som kan korrigere standardfejlene for heteroskedasticitet i en regressionsmodel.
+Fordi income er en kontinuert variabel benyttes R til at udregne APE. 
 
 ```{r}
 ape_logit = logitmfx(logit, data = data, atmean=F, robust = T)
 ape_probit = probitmfx(probit, data = data, atmean=F, robust = T)
 
-screenreg(list(ape_logit = ape_logit, ape_probit = ape_probit), digits = 4)
+screenreg(list(LPM=robust_ols, ape_logit = ape_logit, ape_probit = ape_probit), digits = 4)
 ```
+Der ses ikke betydningsfulde forskelle i ovenstående resultater. Dog ses den største forskel på cirka 1 procentpoint ved "foreign".
 
 ## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE og kommenter på resultaterne.
+
+I dette tilfælde er foreign en binær variabel, og derfor udregnes APE manuelt.
 
 ```{r, include = F}
 cdata <- cbind(1, as.matrix(data[, c("income", "age", "agesq", "educ", "youngkids", "oldkids",
@@ -216,13 +215,28 @@ foreign_ape = round(foreign_ape, digits = 4)
 names(foreign_ape) = c("LPM", "Logit", "Probit")
 foreign_ape
 ```
+
 MANGLER FORKLARING OG FORTOLKNING - BÅDE PROBIT OG LOGIT SVARER TIL HVIS DER ANTAGES CONTINUITY (?)
 
 ## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
-MANGLER
+
+APE er at foretrække, da PEA tager den partielle effekt ved gennemsnittet af variablen. Det vil være at kigge på en gennemsnitlig person, hvilket ikke nødvendigvis er realistisk. APE tager den partielle effekt af alle observationer, og tager efterfølgende gennesnit af dette.
+
 
 ## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
-MANGLER FORKLARING AF PCP
+Percent correctly predicted måler andelen af korrekt klassicicerede observationer i et datasæt. Her forudser man værdien for y, og sammenligner denne med faktiske værdier. 
+Hvis det antages at $\hat{y}_i$ er den forudsete værdi fra OLS estimationen. Forudsigelsen af $y_i$ er defineret ved: 
+
+$$\tilde{y}_i=
+\begin{cases}
+  1 & if \, \hat{y_i} \geq c \\
+  0 & if \, \hat{y_i} < c
+\end{cases}
+$$
+
+C udgør sandsynligstærsklen for at tildele værdien 1 eller 0. Hvis denne er under 0.5 tildeles værdien 0 - er den over 0.5 tildeles værdien 1.
+
+
 ```{r}
 y <- data["participation"]
 lpmpred <- 100*mean((model_ols$fitted > 0.5) == y)
@@ -232,4 +246,4 @@ PCP <- c(lpmpred,logitpred,probitpred)
 names(PCP) <- c("LPM PCP","Logit PCP","Probit PCP")
 PCP
 ```
-MANGLER FORTOLKNING
+Ovenstående resultat fortæller, at modellen har forudsagt rigtigt på 67,43% af udregningen gennem LMP. For både logit og probit har modellen forudsagt rigtigt på 68.11%. Årsagen til det samme resultat for logit og probit, kan forklares ved de ens estimater.
