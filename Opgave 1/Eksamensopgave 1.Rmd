@@ -41,24 +41,24 @@ minority = data$minority
 
 ## Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet og fortolk resultaterne
 For at estimere modellen vha. OLS, opstilles der en regression vha. den indbyggede funktion i R. 
-Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved $$SSR = \sum_\limits{i=n}^{n}(\hat{u}_i)^2$$. Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
+Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved 
+$$SSR = \sum_\limits{i=n}^{n}(\hat{u}_i)^2$$
+Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
 $$min_\beta\sum_\limits{i=n}^{n}(y_i-\hat{y_i})$$
 Hvor $y_i$ er den observerede værdi og $\hat{y_i}$ er den estimerede værdi af modellen.
 ```{r}
 model1 = lm(logsal ~ educ+logbegin+male+minority)
 summary(model1)
 ```
-
-Alle estimater er signifikante på 0,1% bortset fra "Minority", som er signifikant på 1%.
+Alle estimater er signifikante på 0,1% bortset fra "minority", som er signifikant på 1%.
 
 F-testen afvises grundet den lave p-værdi angivet ved < 0.000000000000000222, hvilket vil sige at variablene er "jointly significant", da nulhypotesen i F-testen, $H_0 = \beta_{1,2,3,4} = 0$ afvises. 
-Under antagelse af, at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 3,5\%. Et ekstra års uddannelse vil altså øge lønnen med 3,5\%. Samme princip er gældende for de tre andre variable "logbegin", "male", "minority".
+Under antagelse af, at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 3,5\%. Et ekstra års uddannelse vil altså øge lønnen med 3,5\%. "male" og "minority" er begge binære variable, som per definition enten tager værdien 0 eller 1. Estimatet fra modellen angiver dermed, hvor stor lønforskel der er, hvis "male"=1 eller "minority"=1. Disse estimater skal ligeledes ganges med 100 for at få den procentvise ændring. For "logbegin" skal kan estimatet tolkes direkte som den procentvise ændring. Dermed vil en 1\% ændring i "logbegin" øge "logsal" med 0,85\%.
 Derudover angiver ovenstående model at $R^2 = 0.77$, hvilket vil sige at dataen passer relativt godt til den estimerede model. 
 
 
 ## Opgave 2 - Udfør grafisk modelkontrol
 For at udføre grafisk kontrol opstilles en række plots som beskrives nedenfor.
-
 ```{r}
 par(mfrow=c(2,2))
 plot(model1)
@@ -81,11 +81,10 @@ Der udføres en F-test eller LM-test for at estimere p-værdien, og hvis denne e
 $$H_0: homoskedasticitet$$
 Hvis p-værdien er lav i BP-testen/F-test vil $H_0$ afvises hvorfor der antages at være heteroskedasticitet.
 
-
-White-testen udføres også ved at opstille en regression for det kvadreret fejlled. Dog opstilles denne med de uafængige variable, de kvadrerede uafhængige variable samt krydsprodukterne af de uafhængige variable. Igen udføres en F-test eller LM-test for at vurdere hvorvidt nulhypotesen afvises eller accepteres. Formelen for white-testen ved tre variable er givet ved: 
+White-testen udføres også ved at opstille en regression for det kvadreret fejlled. Dog opstilles denne med de uafhængige variable, de kvadrerede uafhængige variable samt krydsprodukterne af de uafhængige variable. Igen udføres en F-test eller LM-test for at vurdere hvorvidt nulhypotesen afvises eller accepteres. Formlen for white-testen ved tre variable er givet ved: 
 
 $$\hat{u}^2 = \delta_0+\delta_1x_1+\delta_2x_2+\delta_3x_3+\delta_4x^2_1+\delta_5x^2_2+\delta_6x^2_3+\delta_7x_1x_2+\delta_8x_1x_3+\delta_9x_2x_3+error$$
-Special udgaven af White-testen minder i høj grad om den ovenstående metode, men er langt mere simpel. Denne er givet ved formelen: 
+Special udgaven af White-testen minder i høj grad om den ovenstående metode, men er langt mere simpel, da antallet af frihedsgrader hurtigt falder i ovenstående formel. Denne simplere version er givet ved formelen: 
 
 $$\hat{u}^2=\delta_0+\delta_1\hat{y}+\delta_2\hat{y}+error$$
 
@@ -97,14 +96,14 @@ summary(model1u)
 ```
 Da nulhypotesen i F-testen afvises angiver det, at der er heteroskedasticitet i modellen. Ved at bruge $\chi^2$ i stedet for F-test findes Breusch-Pagan testen.
 ```{r}
-lm_chi = 0.077789*474 #BP-test
+lm_chi = 0.029233*474 #BP-test
 1-pchisq(lm_chi, 4) #p-værdien for chi-square
 
 
-bptest(model1)
+bptest(model1) #Samme beregning lavet i R
 ```
 
-BP-værdien på 36.8719 indikerer, at variansen af residualerne ikke er konstant, hvilket også bekræftes ved den lave p-værdi for chi-square. Med den lave p-værdi, kan $H_0$ afvises, hvorfor det tyder på, at der findes heteroskedasticitet.
+BP-værdien på 13.86 indikerer, at variansen af residualerne ikke er konstant, hvilket også bekræftes ved den lave p-værdi for $\chi^2$. Med den lave p-værdi, kan $H_0$ afvises, hvorfor det tyder på, at der findes heteroskedasticitet.
 
 White-test med fitted værdier:\\
 Her benyttes residualer i anden som regresseres på de fitted værdier af modellen og de fitted værdier i anden for at belyse lineære og ikke-lineære forhold mellem de uafhængige variable og residualerne.
@@ -115,28 +114,27 @@ summary(white)
 lm_chi = 0.022954*474 #BP-test
 1-pchisq(lm_chi, 2) #p-værdien for chi-square
 
-#bptest(model1, ~ predict(model1) + I(predict(model1)^2))
+bptest(model1, ~ predict(model1) + I(predict(model1)^2))
 ```
 Igen afvises nulhypotesen i F-testen og der antages derfor at være heteroskedasticitet, hvilket også gælder når $\chi^2$ bruges og dermed en BP-test. Både $\hat{y}$ og $\hat{y}^2$ er signifikante i testen, så det kan ikke siges hvorvidt der er et lineært eller ikke-lineært forhold.
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
-Robuste standartfejl er en metode som kan korrigere standartfejlene i en regressionsmodel, hvor der tages højde for heteroskedasticitet. Metoden kan sikre at inferens er korrekt, i situationer hvor antagelsen om homoskedasticitet er urelaistisk. 
+Robuste standardfejl er en metode som kan korrigere standardfejlene i en regressionsmodel, hvor der tages højde for heteroskedasticitet. Metoden kan sikre at de typiske tests vedrørende signifikans er brugbare i situationer, hvor antagelsen om homoskedasticitet ikke er opfyldt. Dog kan estimatet i dette tilfælde ikke siges at være "BLUE" 
 ```{r}
 model1robust <- coeftest(model1, vcov = vcovHC(model1, type = "HC0"))
 screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
 ```
-Den venstre kolonne udgør resultaterne fra opgave 1, mens den højre kolonne viser samme estimater men med robuste standardafvigelser. Der findes en lille ændring i signifikansniveauet, hvor "minority" er signifikant på et højere niveau, hvilket skyldes den lavere standardafvigelse. 
+Den venstre kolonne udgør resultaterne fra opgave 1, mens den højre kolonne viser samme estimater men med robuste standardafvigelser. Dog ændrer brugen af robuste standardafvigelser ikke på signifikansniveauet for nogle af estimaterne.
 
 ## Opgave 5 - Test hypotesen H0: $\beta_2 = 1$ mod alternativet H1: $\beta_2 \neq 1$
-
-T-fordelingen er også kendt som "student's t-fordeling", og er en sandsynlighedsfordeling. Den bruges ofte til at estimere en populaitons middelværdi, ved en lav stikprøvestørrelse, og hvor populationens standartafvigelse er ukendt. T-fordelingen ligner en normalfordeling, men den har "fatter tails", hvilket belyser, at der findes større sandsynlighed for ekstremværdier. 
+T-fordelingen er også kendt som "student's t-fordeling", og er en sandsynlighedsfordeling. Den bruges ofte til at estimere en populations middelværdi, ved en lav stikprøvestørrelse, og hvor populationens standardafvigelse er ukendt. T-fordelingen ligner en normalfordeling, men den har "fatter tails", hvilket belyser, at der findes større sandsynlighed for ekstremværdier. Dog er den asymptotisk standardnormalfordelt, hvilket betyder at den konvergerer mod en standardnormalfordeling når antal frihedsgrader stiger.
 
 T-scoren beregnes med følgende formel
 $$T = \frac{\hat{\beta}_j-\beta_j}{se(\hat{\beta}_j)}$$
-Her er $\hat{\beta_j}$ estimatet fra regressionen og $\beta_j$ er nulhypotesen, som i dette tilfælde er 1. Der vil i udregningen blive brugt robust standardafvigelser grundet den påviste heteroskedasticitet\\
+Her er $\hat{\beta_j}$ estimatet fra regressionen og $\beta_j$ er nulhypotesen, som i dette tilfælde er 1. Der vil i udregningen blive brugt robust standardafvigelser grundet den påviste heteroskedasticitet.\\
 ```{r}
 #summary(model1)
-t = (0.03008211-1) / 0.00296699
+t = (0.8217988-1) / 0.0374
 t
 
 #kritiske værdier
@@ -144,35 +142,31 @@ alpha = c(0.05, 0.01)
 qt(1-alpha/2, 469)
 
 #P-værdier
-pt(-abs(t), 469)
+pt(-abs(t), 473)
 ```
-De kritiske værdier for 5\% og og 1\% er henholdsvis 1,96 og 2,59 hvorfor $H_0$ afvises og $\beta_2 \neq 1$. P-værdien rapporteres i R som 0, da t-scoren er så lav at p-værdien er for lav til at vise.
+De kritiske værdier for 5\% og og 1\% er henholdsvis 1,965 og 2,586 hvorfor $H_0$ afvises, da den absolutte værdi af t-scoren på 4.76 er højere end de kritiske værdier. Dermed er $\beta_2$ statistisk forskellig fra et. P-værdien er ligeledes meget lav, hvilket igen betyder, at $H_0$ afvises.
 
 
 ## Opgave 6 - Test hypotesen H0: $\beta_3 = \beta_4 = 0$
 F-testen benyttes ofte til at sammenligne varians mellem flere grupper. F-test kan også bruge til at test om flere koefficienter er lig nul. I dette tilfælde opstilles den ovenstående nulhypotese. Følgende formel bruges til, at konkludere hvorvidt nulhypotesen afvises eller ej: 
 $$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
+Her angiver $r$ den begrænsede model, hvor $\beta_3 = \beta_4 = 0$, mens $ur$ angiver den ubegrænsede model hvor alle variable indgår. $q$ er forskellen i frihedsgrader mellem de to modeller. $(n-k-1)$ er antal frihedsgrader i den ubegrænset model, hvor $n$ er antal observationer og $k$ er antal variable i modellen. RSS (kan også kaldes SSR) beskriver "residual sum of squares", som er summen af de estimeret fejlled sat i anden, og hvis SSR = 0 er modellen perfekt ($R^2=1$).
 
-FORMEL
+$$SSR=\sum_\limits{i=n}^{n}(\hat{u}_i)^2$$
+Dog benyttes der her den indbyggede funktion i R, hvor waldtest også tager højde for heteroskedasticiteten i modellen.
 
 ```{r}
 linearHypothesis(model1, c("male=0", "minority=0"))
-#model1a = lm(logsal ~ educ+logbegin)
-#waldtest(model1, model1a)
+model1a = lm(logsal ~ educ+logbegin)
+waldtest(model1, model1a, vcov=vcovHC(model1, type = "HC0"))
 ```
-RSS (kan også kaldes SSR) beskriver residual sum of squares, som er summen af de estimeret fejlled sat i anden, og hvis SSR = 0 er modellen perfekt ($R^2=1$).
-
-$$SSR=\sum_\limits{i=n}^{n}(\hat{u}_i)^2 $$
-
-Den meget lave p-værdi, som tilnærmelsesvist er nul, gør at H0 kan afvises. Dette betyder, at estimaterne "male" eller "minority" er "jointly significant" og dermed i fællesskab forskellig fra 0.
-
-For at beregne F-statistic, kan der gøres brug af formlen for f-test, som er beskrevet ovenstående.
-Her angiver $r$ den begrænsede model, hvor $\beta_3 = \beta_4 = 0$, mens $ur$ angiver den ubegrænsede model hvor alle variable indgår. $q$ er forskellen i frihedsgrader mellem de to modeller. $(n-k-1)$ er antal frihedsgrader i den ubegrænset model, hvor $n$ er antal observationer og $k$ er antal variable i modellen.\\
-Jf. ovenstående er F-værdien 22.6445, hvilket giver en lav p-værdi, hvorfor nulhypotesen, hvor $\beta_3$ og $\beta_4$ er lig med nul, afvises. Derfor vil mindst et af de to estimater have relevans for modellen.
+Den lave p-værdi på under 5\% gør, at H0 kan afvises. Dette betyder, at estimaterne "male" og "minority" er "jointly significant" og dermed i fællesskab forskellig fra 0. Dog er P-værdien i modellen som ikke tager højde for heteroskedasticitet ikke under 1\%, hvorfor nulhypotesen ikke kan afvises på dette signifikansniveau, hvis ikke der tages højde for heteroskedasticitet.
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
 
-FGLS er en forkortelse for Feasible Generalised Least Square. Dette er en metode, som bruges til at estimere parameterne i en lineære regressionsmodel, når der findes heteroskedasticitet. Fra tidligere vides det, at OLS-estimaterne er BLUE under forudsætningerne om, at fejledende har konstant varians (homoskedasticitet) og der ikke findes seriekorrelation. Holder disse forudsætninger ikke, bliver OLS estimaterne inefficiente og standartfejlene upålidelige. Det er i disse tilfælde, at FGLS-metoden spiller en rolle. Formålet med denne metide er nemlig at transformere modellen, så fejledene i den transformeret model opfylder kravene for OLS. 
+FGLS er en forkortelse for Feasible Generalised Least Square. Dette er en metode, som bruges til at estimere parameterne i en lineær regressionsmodel, når der findes heteroskedasticitet. Fra tidligere vides det, at OLS-estimaterne er BLUE under forudsætningerne om, at fejledende har konstant varians (homoskedasticitet). Er dette ikke tilfældet bliver OLS estimaterne inefficiente og standardfejlene upålidelige. Det er i disse tilfælde, at FGLS-metoden spiller en rolle. Formålet med denne metode er nemlig at transformere modellen, så fejlledene i den transformeret model opfylder kravene for OLS. Dette gøres ved først vægte variablene forskelligt i modellen. Hvis vægtningen, $w$, kendes på forhånd kan metoden WLS benyttes. Når vægtningen ikke kendes estimeres denne ud fra datasættet ved at tage logaritmen af de kvadrerede residualer. Disse regresseres på de uafhængige variable og vægtningen findes herefter ved at følgende formel
+$$exp(\hat{g_i})$$
+Hvor $\hat{g_i}$ er fitted værdier fra førnævnte regression.
 
 ```{r}
 logu2 <- log(resid(model1)^2) #Her gøres alt i en command
@@ -181,18 +175,17 @@ w <- exp(fitted(varreg))
 model2fgls = lm(logsal ~ educ+logbegin+male+minority, weight=1/w)
 summary(model2fgls)
 ```
-Det ses hvordan alle koefficienter er statistisk signifikante på 0,1\%. Desuden har modellen en høj forklaringsgrad på $R^2 = 0,73$. Alle estimaterne har relativt høje t-værdier, hvilket giver en lav p-værdi og dermed det høje signifikansniveau.
+I FGLS-modellen er både "educ" og "logbegin" statistisk signifikante på 0,1\%, mens de to binære variable "male" og. "minority" er på 5\%. Desuden har modellen en høj forklaringsgrad på $R^2 = 0,73$. Fortolkningen af variablene er den samme som i opgave 1. Alle estimaterne har relativt høje t-værdier, hvilket giver en lav p-værdi og dermed det høje signifikansniveau.
 
 ```{r}
 screenreg(list(OLS = model1, FGLS = model2fgls), digits = 4)
 ```
-I ovenstående model ses det, at FGLS er signifikant på et højere niveau en OLS - dette skyldes en lavere standartafvigelse. Der ses også en mindre forskel i værdien for $R^2$. 
-Desuden findes der en mindre afvigelse på 1 procentpoint ved "education", hvor denne er højest ved OLS. Der ses ligeledes en mindre afvigelse for "male" på 2 procentpoint - denne er ligeledes højest ved OLS. 
+I ovenstående model ses det, at FGLS ikke er signifikant på et højere niveau en OLS, dog med mindre forskelle i estimaterne. Der ses ligeledes en ubetydelig forskel i værdien for $R^2$. Den lille forskel i estimater og standardafvigelser kan være et tegn på, at FGLS ikke har fjernet heteroskedasticiteten, hvilket uddybes nedenfor.
 
 ## Opgave 8 - Har FGLS estimationen taget højde for al heteroskedasticiteten?
 
-I ovenstående opgave 3 blev det tydeligt, at det signifikante resultat fra Breusch-Pagan testen indikerede, at modellen indeholdte heteroskedasticitet, hvilket er en god årsag til at benytte sig at FGLS estimationen. Denne tager nemlig højde for heteroskedasticitet i modellen, ved at omforme fejlledende så de bliver homoskedastiske (konstant varians). Anvendelsen af FGLS gør modellen mere præcis, end de resultater som opnås ved almindelig OLS, specielt når der er stærk heteroskedasticitet til stede. 
-Det kan dog ikke udelukkes, at der efter FGLS estimationen ikke er mere heteroskedasticitet, og derfor kan der udeføres en BP-test eller White-test. 
+I ovenstående opgave 3 blev det tydeligt, at det signifikante resultat fra Breusch-Pagan testen indikerede, at modellen indeholdte heteroskedasticitet, hvilket er en god årsag til at benytte sig at FGLS estimationen. Denne bør nemlig tage højde for heteroskedasticitet i modellen, ved at omforme fejlledende så de bliver homoskedastiske (konstant varians). Anvendelsen af FGLS gør modellen mere præcis, end de resultater som opnås ved almindelig OLS, specielt når der er stærk heteroskedasticitet til stede. 
+Det kan dog ikke udelukkes, at der efter FGLS estimationen ikke er mere heteroskedasticitet, og derfor kan der udføres en BP-test eller White-test. 
 
 ```{r}
 u2 = resid(model2fgls)^2
@@ -210,4 +203,4 @@ Det signifikante resultat fra Breusch-Pagan testen indikerer, at modellen stadig
 white_fgls = lm(u2 ~ predict(model2fgls) + I(predict(model2fgls)^2))
 summary(white_fgls)
 ```
-White-testen viser ligeledes tegn på heteroskedasticitet, da p-værdien i F-testen er tilnærmelsesvis nul.
+White-testen viser ligeledes tegn på heteroskedasticitet, da p-værdien i F-testen er lav og under nogle relevante signifikansniveauer.
