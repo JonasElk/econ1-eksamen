@@ -23,6 +23,7 @@ library(lmtest)
 library(sandwich)
 library(texreg)
 library(mfx)
+library(margins)
 options(digits = 8)
 options(scipen = 999)
 rm(list=ls())
@@ -215,8 +216,16 @@ foreign_ape = round(foreign_ape, digits = 4)
 names(foreign_ape) = c("LPM", "Logit", "Probit")
 foreign_ape
 ```
+Da testen i forrige opgave lavet vha. R også antog, at "foreign" var binær er der i estimatet taget højde for dette. Derfor er APE den samme for "foreign" som i forrige opgave i både logit og probit. I ovenstående er LPM blot estimatet fra den almindelige OLS-model. Både logit og probit regressionen estimerer effekten af "foreign" til at være lidt lavere end i LPM. Disse estimater betyder, at hvis man er "foreign", vil sandsynligheden stige med størrelsen angivet ovenfor. Hvis den forrige opgave derimod ikke havde taget højde for, at "foreign" er en binær variabel vil resultatet dog ikke stemme overens. Dette kan ses i nedenstående.
+```{r, echo = F}
+margins(model = logit, variables = "foreign")
+margins(model = probit, variables = "foreign")
 
-MANGLER FORKLARING OG FORTOLKNING - BÅDE PROBIT OG LOGIT SVARER TIL HVIS DER ANTAGES CONTINUITY (?)
+cat("APE for logit under kont. = 0.238")
+cat("APE for probit under kont. = 0.241")
+```
+Her ses en APE på henholdsvis 0,238 og 0,241 hvis det antages, at variablen er kontinuert. Da dette ikke er tilfældet vil de forrige estimater være mere retvisende, da der her tages højde for, at variablen er binær.
+
 
 ## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
 
