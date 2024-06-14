@@ -90,12 +90,12 @@ Logit- og probit-modeller anvendes til at modellere en binær afhængig variabel
 
 Begge modeller har opbygningen $$P(Y=1|X)=G(z)=G(\beta_0+\beta_1x_1+\cdots+\beta_jx_j)$$
 
-G angiver en "probability density function" for en logit-model, hvorved denne model er givet ved funktionen $$\frac{exp(z)}{1+exp(z)}$$
+Hvor $G$ angiver en funktion af regressionsmodellen. For en logit-model er denne model givet ved funktionen $$\frac{exp(z)}{1+exp(z)}$$
 
 
-For en probit-model angiver funktionen en "cumulative distribution function". $$\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}exp(\frac{-z^2}{2})du$$
-For denne model antages fejlledet at være normalfordelt. 
+For en probit-model er funktionen i stedet givet ved $$\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}exp(\frac{-z^2}{2})du$$
 
+Logit-modellen følger en logistisk regression, mens probit følger en normalfordeling. Fordelen ved disse modeller er, at sandsynligheden i modsætning til LMP er begrænset til intervallet 0-1.
 MANGLER TEKST OM LOGIT OG PROBIT
 
 JOOOOOONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSSSS
@@ -115,7 +115,7 @@ probit = glm(participation ~ income + age + agesq + educ + youngkids + oldkids +
 screenreg(list("LPM OLS" = model_ols, Logit = logit, Probit = probit), digits = 4)
 ```
 
-Effekten af disse estimater kan ikke direkte aflæses for logit- og probit-regressionerne, grundet den funktion der bruges i disse regressionsmetoder. Dog kan de stadig benyttes til at se signifikansniveau samt fortegn for effekten af variablen. Dermed er $educ$ ikke signifikant i nogle af modellerne, og de enkelte estimater har samme fortegn for hver model.
+Effekten af disse estimater kan ikke direkte fortolkes i logit- og probit-regressionerne, grundet den funktion der bruges i disse regressionsmetoder. Dog kan de stadig benyttes til at se signifikansniveau samt fortegn for effekten af variablen. Dermed er $educ$ ikke signifikant i nogle af modellerne, og de enkelte estimater har samme fortegn for hver model.
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
 
