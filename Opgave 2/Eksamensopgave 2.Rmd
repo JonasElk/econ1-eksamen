@@ -37,8 +37,8 @@ data2 = read.csv("data2.csv")
 
 ## Opgave 1 - Estimer de to modeller vha. OLS. Kommenter på outputtet, sammenlign og fortolk resultaterne.
 For at estimere modellen vha. OLS, opstilles der en regression vha. den indbyggede funktion i R. 
-Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved $$SSR = \sum_\limits{i=n}^{n}(\hat{u}_i)^2$$. Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
-$$min_\beta\sum_\limits{i=n}^{n}(y_i-\hat{y_i})$$
+Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved $$SSR = \sum_{i=n}^{n}(\hat{u}_i)^2$$. Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
+$$min_\beta\sum_{i=n}^{n}(y_i-\hat{y_i})$$
 Hvor $y_i$ er den observerede værdi og $\hat{y_i}$ er den estimerede værdi af modellen.
 
 For model 1 vil der være en level-level fortolkning på estimaterne, mens der vil være en log-level fortolkning af estimaterne for model 2, med undtagelse af estimatet "log(salbegin)", som vil blive fortolket ved log-log.
@@ -56,8 +56,8 @@ For model 2 er alle estimaterne signifikante, hvor skæringspunktet ("intercept"
 
 Estimaterne i model 1 angiver, at en stigning i den enkelte variabel (under antagelse af, at de resterende variable holdes konstant) vil medføre en ændring i lønnen på det tilsvarende estimat.
 
-Estimaterne (med undtagelse af "log(salbegin)") i model 2 angiver at ved en enheds stigning i den pågældende koeffiecient (under antagelse, at de resterende variable holdes konstant) vil medføre en procentvis stigning/et procentvist fald (approksimeret) i lønnen, angivet ved "log(salary".
-Derudover angiver "log(salbegin)" at ved en 1% stigning (under antagelse at de resterende variable holdes konstant) i begyndelseslønnen vil medføre en approksimeret stigning på 82% i lønnen. 
+Estimaterne (med undtagelse af "log(salbegin)") i model 2 angiver at ved en enheds stigning i den pågældende koeffiecient (under antagelse, at de resterende variable holdes konstant) vil medføre en procentvis stigning/et procentvist fald (approksimeret) i lønnen, angivet ved "log(salary)".
+Derudover angiver "log(salbegin)" at ved en 1% stigning (under antagelse at de resterende variable holdes konstant) i begyndelseslønnen vil medføre en approksimeret stigning på 0,82% i lønnen. 
 
 $R^2$ angiver forklaringsgraden af dataen i forhold til den estimeret model. Her kan det ses at $R^2 = 0.80$ i model 1, mens $R^2 = 0.81$ for model 2. 
 Kigges der i stedet på "adjusted $R^2$", som også tager hensyn til hvorvidt flere variable tilføjes til modellen, kan det ses at model 1 har en $R^2 = 0.79$ mens model 2 har en $R^2 = 0.8$. 
@@ -91,7 +91,7 @@ For "Residuals vs. fitted" vil det ses, at punkterne er tilfældigt spredt over 
 
 ## Opgave 3 - Undersøg om de to modeller er misspecificerede vha. RESET-testet
 RESET står for "regression specification error test" og blev lavet af Ramsey i 1969. 
-Hvis en model opfylder MLR4 (homoskedasticitet), kan man teste for misspecifikation, ved at tilføje den kvadrerede form af de uafhængige variable, og derefter udføre en F-test for at teste "joint null hypothesis". De kvadrerede variable vil fange, hvis der er noget ikke-lineært i modellen, og derfor vil de tilføjede kvadrerede variable være insignifikante for modellen, såfremt modellen ikke er misspecificeret.
+Hvis en model opfylder MLR4 (homoskedasticitet), kan man teste for misspecifikation, ved at tilføje de uafhængige variable kvadreret og i tredje, og derefter udføre en F-test for at teste for "joint significance". De kvadrerede variable og i tredjepotens vil fange, hvis der er noget ikke-lineært i modellen, og derfor vil de tilføjede variable være insignifikante for modellen, såfremt modellen ikke er misspecificeret.
 
 ```{r}
 y2 = fitted(model1)^2
@@ -101,40 +101,37 @@ reset1 = lm(salary ~ educ + salbegin + male + minority + y2 + y3, data = data2)
 
 linearHypothesis(reset1, c("y2=0", "y3=0"))
 
-resettest(model1)
-
-
+#resettest(model1)
+```
+```{r}
 y2 = fitted(model2)^2
 y3 = fitted(model2)^3
 reset2 = lm(log(salary) ~ educ + log(salbegin) + male + minority + y2 + y3, data = data2)
 linearHypothesis(reset2, c("y2=0", "y3=0"))
 
-resettest(model2)
+#resettest(model2)
 ```
-Begge er insignifikante på 5%, men signifikante på 10%. De er dermed misspecificeret på 10% men ikke 5%. Hvorvidt den er misspecificeret ud fra reset-test afhænger af signifikansniveauet.
+
+I begge modeller er det kvadrerede led samt leddet i tredje insignifikante på 5%, men signifikante på 10%. De er dermed misspecificeret på 10% men ikke 5%. Hvorvidt den er misspecificeret ud fra reset-test afhænger derfor af signifikansniveauet.
 
 ## Opgave 4 - Forklar hvorfor det kunne være relevant at medtage educ2 som forklarende variabel i de to modeller. Estimer de to modeller igen hvor educ2 inkluderes (med tilhørende koefficient ¯5), kommenter kort på outputtet og udfør RESET-testet igen.
 
-Som det fremgår af 2.3, kan modellen være misspecificeret. Det kan derfor efterprøves, om det skyldes en ikke-lineær sammenhæng mellem længden af uddannelse (educ) og løn, ved at inkludere educ^2, for derefter lave RESET igen og se om der herefter vil være et klart svar på, hvorvidt modellen er mispecifiseret. 
+Som det fremgår af 2.3, kan modellen være misspecificeret. Det kan derfor efterprøves, om det skyldes en ikke-lineær sammenhæng mellem længden af uddannelse (educ) og løn, ved at inkludere $educ^2$, for derefter lave RESET igen og se om der herefter vil være et klart svar på, hvorvidt modellen er misspecifiseret. 
 
 ```{r}
 educ2 = data2$educ^2
 model1educ = lm(salary ~ educ + educ2 + salbegin + male + minority, data = data2)
 model2educ = lm(log(salary) ~ educ + educ2 + log(salbegin) + male + minority, data = data2)
 
-screenreg(list(model1educ, model2educ), digits = 4)
+screenreg(list("Model1" = model1, "Model 1 m. educ2"= model1educ, "Model 2" = model2, "Model 2 m. educ2" = model2educ), digits = 4)
+```
+Der ses en relativ stor forskel i estimaterne, når $educ^2$ tages med i modellen. Eksempelvis er estimatet for $educ$ ændret fra ca. 1 til -2.3 i model 1. Dette kan være tegn på, at udeladelsen af det kvadrerede led har skabt en relativ stor bias i estimatet.
 
-par(mfrow = c(1,2))
-plot(model1, 1)
-plot(model1educ, 1)
-
-plot(model2, 1)
-plot(model2educ, 1)
-
+```{r}
 reset(model1educ)
 reset(model2educ)
 ```
-Der er højere p-værdier i begge, hvorfor de nu begge er insignifikante på 15% og under. Dermed er begge modeller nu ikke misspecificeret på noget relevant signifikansniveau. Dog er hverken $educ$ eller $educ^2$ signifikante på 5\% i model 2.
+Der er højere p-værdier i begge, hvorfor de nu begge er insignifikante på 15% og under. Dermed er begge modeller nu ikke misspecificeret på noget relevant signifikansniveau. Dog er hverken $educ$ eller $educ^2$ signifikante på 5% eller lavere i model 2.
 
 ## Opgave 5 - Test hypotesen $H0 : \beta_1 = \beta_5 = 0$ i begge modeller (fra spørgsmål 4).
 F-testen benyttes ofte til at sammenligne varians mellem flere grupper. F-test kan også bruge til at test om flere koefficienter er lig nul. I dette tilfælde opstilles den ovenstående nulhypotese. Følgende formel bruges til, at konkludere hvorvidt nulhypotesen afvises eller ej: 
@@ -145,7 +142,7 @@ linearHypothesis(model1educ, c("educ=0", "educ2=0"))
 #waldtest(model1, model1a)
 ```
 
-I dette tilfælde er p-værdien ekstremt lille, og derfor forkastes nulhypotesen. Desuden indikere den høje F-værdi på 23.56, at de to variable "educ" og "educ2" har signifikant indflydelse på lønnen, som i dette tilfælde er den afhængeige variable. 
+I dette tilfælde er p-værdien ekstremt lille, og derfor forkastes nulhypotesen. Desuden indikerer den høje F-værdi på 23.56, at de to variable "educ" og "educ2" har signifikant indflydelse på lønnen, som i dette tilfælde er den afhængeige variable. 
 
 ```{r}
 linearHypothesis(model2educ, c("educ=0", "educ2=0"))

@@ -41,10 +41,10 @@ minority = data$minority
 
 ## Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet og fortolk resultaterne
 For at estimere modellen vha. OLS, opstilles der en regression vha. den indbyggede funktion i R. 
-Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved 
-$$SSR = \sum_\limits{i=n}^{n}(\hat{u}_i)^2$$
+Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved.
+$$SSR = \sum_{i=n}^{n}(\hat{u}_i)^2$$
 Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
-$$min_\beta\sum_\limits{i=n}^{n}(y_i-\hat{y_i})$$
+$$min_\beta\sum_{i=n}^{n}(y_i-\hat{y_i})$$
 Hvor $y_i$ er den observerede værdi og $\hat{y_i}$ er den estimerede værdi af modellen.
 ```{r}
 model1 = lm(logsal ~ educ+logbegin+male+minority)
@@ -152,7 +152,7 @@ F-testen benyttes ofte til at sammenligne varians mellem flere grupper. F-test k
 $$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
 Her angiver $r$ den begrænsede model, hvor $\beta_3 = \beta_4 = 0$, mens $ur$ angiver den ubegrænsede model hvor alle variable indgår. $q$ er forskellen i frihedsgrader mellem de to modeller. $(n-k-1)$ er antal frihedsgrader i den ubegrænset model, hvor $n$ er antal observationer og $k$ er antal variable i modellen. RSS (kan også kaldes SSR) beskriver "residual sum of squares", som er summen af de estimeret fejlled sat i anden, og hvis SSR = 0 er modellen perfekt ($R^2=1$).
 
-$$SSR=\sum_\limits{i=n}^{n}(\hat{u}_i)^2$$
+$$SSR=\sum_{i=n}^{n}(\hat{u}_i)^2$$
 Dog benyttes der her den indbyggede funktion i R, hvor waldtest også tager højde for heteroskedasticiteten i modellen.
 
 ```{r}
