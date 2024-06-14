@@ -40,7 +40,7 @@ minority = data$minority
 # Eksamenssæt 1
 
 ## Opgave 1 - Estimer modellen vha. OLS. Kommenter på outputtet og fortolk resultaterne
-For at estimere modellen vha. OLS, opstilles der en regression vha. den indbyggede funktion i R. 
+For at estimere modellen vha. OLS, opstilles der en regression med den indbyggede funktion i R. 
 Målet med en OLS-regression er at minimere "sum of squared residuals, SSR" givet ved.
 $$SSR = \sum_{i=n}^{n}(\hat{u}_i)^2$$
 Jo større SSR, des mindre passer dataen til den estimeret model. Dermed vil man med en OLS-regression minimere følgende funktion.
@@ -50,11 +50,11 @@ Hvor $y_i$ er den observerede værdi og $\hat{y_i}$ er den estimerede værdi af 
 model1 = lm(logsal ~ educ+logbegin+male+minority)
 summary(model1)
 ```
-Alle estimater er signifikante på 0,1% bortset fra "minority", som er signifikant på 1%.
+De to binære variable "male" og "minority" er signifikante på 5%, mens både "educ" og "logbegin" er signifikante på 0,1%.
 
 F-testen afvises grundet den lave p-værdi angivet ved < 0.000000000000000222, hvilket vil sige at variablene er "jointly significant", da nulhypotesen i F-testen, $H_0 = \beta_{1,2,3,4} = 0$ afvises. 
-Under antagelse af, at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 3,5\%. Et ekstra års uddannelse vil altså øge lønnen med 3,5\%. "male" og "minority" er begge binære variable, som per definition enten tager værdien 0 eller 1. Estimatet fra modellen angiver dermed, hvor stor lønforskel der er, hvis "male"=1 eller "minority"=1. Disse estimater skal ligeledes ganges med 100 for at få den procentvise ændring. For "logbegin" skal kan estimatet tolkes direkte som den procentvise ændring. Dermed vil en 1\% ændring i "logbegin" øge "logsal" med 0,85\%.
-Derudover angiver ovenstående model at $R^2 = 0.77$, hvilket vil sige at dataen passer relativt godt til den estimerede model. 
+Under antagelse af, at alle andre variable er faste, vil en stigning i "educ" (uddannelse) på 1, medfører en stigning i lønnen på 2,3\%. Et ekstra års uddannelse vil altså øge lønnen med 2,3\%. "male" og "minority" er begge binære variable, som per definition enten tager værdien 0 eller 1. Estimatet fra modellen angiver dermed, hvor stor lønforskel der er, hvis "male"=1 eller "minority"=1. Disse estimater skal ligeledes ganges med 100 for at få den procentvise ændring. For "logbegin" skal kan estimatet tolkes direkte som den procentvise ændring. Dermed vil en 1\% ændring i "logbegin" øge "logsal" med 0,82\%.
+Derudover angiver ovenstående model at $R^2 = 0.8$, hvilket vil sige at dataen passer relativt godt til den estimerede model. 
 
 
 ## Opgave 2 - Udfør grafisk modelkontrol
@@ -67,7 +67,7 @@ Ovenstående er udført grafisk modelkontrol.
 "Residuals vs. Fitted" viser, at residualerne ikke er spredte, hvilket er indikation på, at der ikke er tale om et "non-linear relationship". Dog er den røde linje her næsten vandret (med undtagelse af det yderste af x-aksen), hvilket kunne være tegn homoskedasticitet og dermed være tegn på et lineært forhold. 
 "Q-Q plot" viser at residualerne tilnærmelsesvist følger en ret linje, og derfor antages de at være normalfordelt. 
 "Scale-Location" belyser, at punkterne ikke er vilkårligt fordelt, hvilket kan indikerer at der er tale om heteroskedasticitet for modellen. Ideelt ønskes, at den røde linje er vandret samt at residualpunkterne er spredt og tilfældigt fordelt. 
-"Resudials vs. Leverage" tydeliggøre problematikken vedrørende outliers. Y-aksen angiver de standardiseret residualer givet ved $\frac {u}{se}$, mens x-aksen angiver "leverage" som måler hvor stor indflydelse en observation har på estimaterne for regressionens koefficienter. De stiplede linjer viser de forskellige niveauer for Cook's distance, som viser hvorvidt en outlier har stor betydning for estimationen af regressionens koefficienter. Hvis Cook's distancen for en observation er større end 1, anses den for at være indflydelsesrig for estimationen. I modellen ses tre outliers, 205, 343 og 29. Her ligger de to førstnævnte indenfor Cook's distance på 0,5 og vurderes derfir til at have lav indflydelse, mens 29 ligger på en Cook's distance imellem 0,5 og 1, hvilket heller ikke vurderes til at have den store effekt på regressionens estimater. Der er ingen outliers udenfor Cook's distance på 1.
+"Residuals vs. Leverage" tydeliggøre problematikken vedrørende outliers. Y-aksen angiver de standardiseret residualer givet ved $\frac {u}{se}$, mens x-aksen angiver "leverage" som måler hvor stor indflydelse en observation har på estimaterne for regressionens koefficienter. De stiplede linjer viser de forskellige niveauer for Cook's distance, som viser hvorvidt en outlier har stor betydning for estimationen af regressionens koefficienter. Hvis Cook's distancen for en observation er større end 1, anses den for at være indflydelsesrig for estimationen.
 
 
 ## Opgave 3 - Test for heteroskedasticitet vha. Breusch-Pagan-testen og specialudgaven af White-testen
@@ -105,7 +105,8 @@ bptest(model1) #Samme beregning lavet i R
 
 BP-værdien på 13.86 indikerer, at variansen af residualerne ikke er konstant, hvilket også bekræftes ved den lave p-værdi for $\chi^2$. Med den lave p-værdi, kan $H_0$ afvises, hvorfor det tyder på, at der findes heteroskedasticitet.
 
-White-test med fitted værdier:\\
+White-test med fitted værdier:
+
 Her benyttes residualer i anden som regresseres på de fitted værdier af modellen og de fitted værdier i anden for at belyse lineære og ikke-lineære forhold mellem de uafhængige variable og residualerne.
 ```{r}
 white = lm(u2 ~ predict(model1) + I(predict(model1)^2))
@@ -119,7 +120,7 @@ bptest(model1, ~ predict(model1) + I(predict(model1)^2))
 Igen afvises nulhypotesen i F-testen og der antages derfor at være heteroskedasticitet, hvilket også gælder når $\chi^2$ bruges og dermed en BP-test. Både $\hat{y}$ og $\hat{y}^2$ er signifikante i testen, så det kan ikke siges hvorvidt der er et lineært eller ikke-lineært forhold.
 
 ## Opgave 4 - Beregn robuste standardfejl for modellen og sammenlign med resultaterne i spørgsmål 1
-Robuste standardfejl er en metode som kan korrigere standardfejlene i en regressionsmodel, hvor der tages højde for heteroskedasticitet. Metoden kan sikre at de typiske tests vedrørende signifikans er brugbare i situationer, hvor antagelsen om homoskedasticitet ikke er opfyldt. Dog kan estimatet i dette tilfælde ikke siges at være "BLUE" 
+Robuste standardfejl er en metode som kan korrigere standardfejlene i en regressionsmodel, hvor der tages højde for heteroskedasticitet. Metoden kan sikre at de typiske tests vedrørende signifikans er brugbare i situationer, hvor antagelsen omkring homoskedasticitet ikke er opfyldt. Dog kan estimatet i dette tilfælde ikke siges at være "BLUE" 
 ```{r}
 model1robust <- coeftest(model1, vcov = vcovHC(model1, type = "HC0"))
 screenreg(list(OLS = model1, OLS_robust_se = model1robust), digits = 4)
@@ -131,7 +132,7 @@ T-fordelingen er også kendt som "student's t-fordeling", og er en sandsynlighed
 
 T-scoren beregnes med følgende formel
 $$T = \frac{\hat{\beta}_j-\beta_j}{se(\hat{\beta}_j)}$$
-Her er $\hat{\beta_j}$ estimatet fra regressionen og $\beta_j$ er nulhypotesen, som i dette tilfælde er 1. Der vil i udregningen blive brugt robust standardafvigelser grundet den påviste heteroskedasticitet.\\
+Her er $\hat{\beta_j}$ estimatet fra regressionen og $\beta_j$ er nulhypotesen, som i dette tilfælde er 1. Der vil i udregningen blive brugt robust standardafvigelser grundet den påviste heteroskedasticitet.
 ```{r}
 #summary(model1)
 t = (0.8217988-1) / 0.0374
@@ -164,7 +165,7 @@ Den lave p-værdi på under 5\% gør, at H0 kan afvises. Dette betyder, at estim
 
 ## Opgave 7 - Estimer modellen vha. FGLS og kommenter på resultaterne
 
-FGLS er en forkortelse for Feasible Generalised Least Square. Dette er en metode, som bruges til at estimere parameterne i en lineær regressionsmodel, når der findes heteroskedasticitet. Fra tidligere vides det, at OLS-estimaterne er BLUE under forudsætningerne om, at fejledende har konstant varians (homoskedasticitet). Er dette ikke tilfældet bliver OLS estimaterne inefficiente og standardfejlene upålidelige. Det er i disse tilfælde, at FGLS-metoden spiller en rolle. Formålet med denne metode er nemlig at transformere modellen, så fejlledene i den transformeret model opfylder kravene for OLS. Dette gøres ved først vægte variablene forskelligt i modellen. Hvis vægtningen, $w$, kendes på forhånd kan metoden WLS benyttes. Når vægtningen ikke kendes estimeres denne ud fra datasættet ved at tage logaritmen af de kvadrerede residualer. Disse regresseres på de uafhængige variable og vægtningen findes herefter ved at følgende formel
+FGLS er en forkortelse for Feasible Generalised Least Square. Dette er en metode, som bruges til at estimere parameterne i en lineær regressionsmodel, når der findes heteroskedasticitet. Fra tidligere vides det, at OLS-estimaterne er BLUE under forudsætningerne om, at fejledende har konstant varians (homoskedasticitet). Er dette ikke tilfældet bliver OLS estimaterne inefficiente og standardafvigelserne upålidelige. Det er i disse tilfælde, at FGLS-metoden spiller en rolle. Formålet med denne metode er nemlig at transformere modellen, så fejlledene i den transformeret model opfylder kravene for OLS. Dette gøres ved først vægte variablene forskelligt i modellen. Hvis vægtningen, $w$, kendes på forhånd kan metoden WLS benyttes. Når vægtningen ikke kendes estimeres denne ud fra datasættet ved at tage logaritmen af de kvadrerede residualer. Disse regresseres på de uafhængige variable og vægtningen findes herefter ved at følgende formel
 $$exp(\hat{g_i})$$
 Hvor $\hat{g_i}$ er fitted værdier fra førnævnte regression.
 

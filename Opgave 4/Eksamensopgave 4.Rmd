@@ -38,9 +38,15 @@ data = read.csv("data4.csv")
 ## Opgave 1 - Opstil en lineær regressionsmodel for \textit{participation} hvor du bruger de beskrevne forklarende variable.
 
 ### (a) - Estimer modellen vha. OLS og kommenter på resultaterne.
-For at estimere modellen gøres der brug af LPM, som står for "Linear probability model". LPM bruges da den afhængige variabel "participation" er en binær variabel, hvorfor den kun kan tage værdierne 0 og 1. Hertil betyder 1 deltagelse og 0 betyder ikke-deltagelse. Sandsynligheden for "succes" ($participation = 1$) er givet ved middelværdien for ($E(y)$). Dermed kan modellen opstilles som $$P(y = 1|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5 + \beta_6 x_6 + \beta_7 x_7 + u$$Hertil er den estimeret model givet ved $$\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat {\beta_2} x_2 + \hat{\beta_3} x_3 + \hat{\beta_4} x_4 + \hat{\beta_5} x_5 + \hat{\beta_6} x_6 + \hat{\beta_7} x_7 + u$$ Her angiver de forskellige $\beta$'er ændringen i sandsynligheden for "succes" (under antagelse af, at andre faktorer holdes fast) ved en ændring i den pågældende variabel med en enhed. Dog er problematikken, at når værdierne for de uafhængige variable indsættes i modellen, kan man risikere, at den forventede værdi for y enten er under 0 eller over 1, hvilket vil sige at sandsynligheden enten er negativ eller over 100\%.
+For at estimere modellen gøres der brug af LPM, som står for "linear probability model". LPM bruges da den afhængige variabel "participation" er en binær variabel, hvorfor den kun kan tage værdierne 0 og 1. Hertil betyder 1 deltagelse og 0 betyder ikke-deltagelse. Sandsynligheden for "succes" ($participation = 1$) er givet ved middelværdien for ($E(y)$). Dermed kan modellen opstilles som 
+$$P(y = 1|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5 + \beta_6 x_6 + \beta_7 x_7 + u$$
+Hertil er den estimeret model givet ved 
+$$\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1 + \hat {\beta_2} x_2 + \hat{\beta_3} x_3 + \hat{\beta_4} x_4 + \hat{\beta_5} x_5 + \hat{\beta_6} x_6 + \hat{\beta_7} x_7 + u$$
+Her angiver de forskellige $\beta$'er ændringen i sandsynligheden for "succes" (under antagelse af, at andre faktorer holdes fast) ved en ændring i den pågældende variabel med en enhed. Dog er problematikken, at når værdierne for de uafhængige variable indsættes i modellen, kan man risikere, at den forventede værdi for y enten er under 0 eller over 1, hvilket vil sige at sandsynligheden enten er negativ eller over 100\%.
 
-For LPM gælder det generelt, at modellen er retvisende, når værdierne for de uafhængige variable er tæt på middelværdien. Da der nødvendigvis er et binært element i LPM, er MLR-antagelsen om homoskedasticitet ikke overholdt. Dermed kan F-test og t-test ikke bruges som normal vis, da variancen for fejlledet ikke er konstant som resultat af heteroskedasticitet, hvorfor estimatorvariancerne er biased. I det følgende vil standardafivigelserne altså blive justeret, eftersom "robust standard errors" udregnes.
+For LPM gælder det generelt, at modellen er mest retvisende, når værdierne for de uafhængige variable er tæt på middelværdien. 
+
+Da der nødvendigvis er et binært element i LPM, er MLR-antagelsen om homoskedasticitet ikke overholdt. Dermed kan F-test og t-test ikke bruges som normal vis, da variansen for fejlledet ikke er konstant som resultat af heteroskedasticitet, hvorfor variasen af estimaterne er misvisende. I det følgende vil standardafvigelserne altså blive justeret, eftersom robuste standardafvigelser udregnes.
 
 ```{r}
 model_ols = lm(participation ~ income + age + agesq + educ + youngkids + oldkids + foreign, data = data)
@@ -48,12 +54,16 @@ robust_ols = coeftest(model_ols, vcov = vcovHC(model_ols, type = "HC0")) #robust
 
 screenreg(list(OLS = model_ols, OLS_robust_se = robust_ols), digits = 4)
 ```
-Alle estimaterne er signifikante på 0,1\%, med undtagelse af "oldkids" som er signifikant på 1\% samt "intercept" og "educ" som begge ikke er signifikante. 
-Én enheds stigning i det enkelte estimat angiver påvirkningen på den samlede sandsynlighed for "participation". Eksempelvis betyder estimatet "age", at når alderen stiger med en, vil sandsynligheden for "participation" stige med 6\%.
+Alle estimaterne er signifikante på 0,1\%, med undtagelse af "oldkids" som er signifikant på 1\% samt "intercept" og "educ" som begge er insignifikante. 
+Én enheds stigning i det enkelte estimat angiver påvirkningen på den samlede sandsynlighed for "participation". Eksempelvis betyder estimatet "oldkids", at når antallet af gamle børn stiger med en, vil sandsynligheden for "participation" falde med 4,75\%.
 
 ### (b) - Test om den partielle effekt af uddannelse er forskellig fra nul.
-
-For at teste, hvorvidt den partielle effekt af en variabel er forskellig fra nul, bruges en t-test. Hvorvidt nulhypotesen afvises, afhænger af den beregnede t-score og dertilhørende p-værdi $$H_0: \beta_4 = 0$$ $$H_1: \beta_4 \neq 0$$ T-scoren beregnes ud fra den estimerede $\beta$ samt den tilhørende standardafvigelse. Nulhypotesen er, at den faktiske værdi af $\beta_4$ er lig nul, hvorfor dette led ikke indgår i formlen. $$t = \frac{\hat{\beta_j}}{se(\hat{\beta_j})}$$ I nedenstående vil de robuste standardafvigelser blive benyttet til udregningen af t-scoren.
+For at teste, hvorvidt den partielle effekt af en variabel er forskellig fra nul, bruges en t-test. Hvorvidt nulhypotesen afvises, afhænger af den beregnede t-score og dertilhørende p-værdi 
+$$H_0: \beta_4 = 0$$
+$$H_1: \beta_4 \neq 0$$
+T-scoren beregnes ud fra den estimerede $\beta$ samt den tilhørende standardafvigelse. Nulhypotesen er, at den faktiske værdi af $\beta_4$ er lig nul, hvorfor dette led ikke indgår i formlen. 
+$$t = \frac{\hat{\beta_j}}{se(\hat{\beta_j})}$$
+I nedenstående vil de robuste standardafvigelser blive benyttet til udregningen af t-scoren.
 
 ```{r, echo = F}
 cat("Kritisk værdi ved 5% = ",qt(1-0.025, df=length(data$educ)-1))
@@ -78,10 +88,11 @@ Da p-værdien er højere end det den fastsatte grænse på 5\% er resultatet ikk
 ### (c) - Test om den partielle effekt af alder er forskellig fra nul.
 
 For at teste hvorvidt alder er statistisk signifikant i modellen bruges en F-test, da alder indgår både som lineært og kvadreret led.
+$$F = \frac {(SSR_r - SSR_{ur}) /q}{SSR_{ur} / (n - k - 1)}$$
 $$H_0:\beta_2=\beta_3=0$$
-
+I nedenstående laves F-testen vha. waldtest i R, da denne tager højde for heteroskedasticitet.
 ```{r, echo = F}
-linearHypothesis(model_ols, c("age=0", "agesq=0"))
+waldtest(model_ols, vcov=vcovHC(model_ols, type = "HC0"), terms=(2:3))
 ```
 Grundet den lave p-værdi afvises nulhypotesen om at den partielle effekt af alder er forskellig fra nul.
 
@@ -89,14 +100,16 @@ Grundet den lave p-værdi afvises nulhypotesen om at den partielle effekt af ald
 
 Logit- og probit-modeller anvendes til at modellere en binær afhængig variabel. Begge angiver sandsynligheden i intervallet $[0,1]$ for at variablen tager værdien 1, men forskellen ligger i funktionerne modellerne bygger på. 
 
-Begge modeller har opbygningen $$P(Y=1|X)=G(z)=G(\beta_0+\beta_1x_1+\cdots+\beta_jx_j)$$
+Begge modeller har opbygningen 
+$$P(Y=1|X)=G(z)=G(\beta_0+\beta_1x_1+\cdots+\beta_jx_j)$$
 
-Hvor $G$ angiver en funktion af regressionsmodellen. For en logit-model er denne model givet ved funktionen $$\frac{exp(z)}{1+exp(z)}$$
+Hvor $G$ angiver en funktion af regressionsmodellen. For en logit-model er denne model givet ved funktionen 
+$$\frac{exp(z)}{1+exp(z)}$$
 
+For en probit-model er funktionen i stedet givet ved 
+$$\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}exp(\frac{-z^2}{2})du$$
 
-For en probit-model er funktionen i stedet givet ved $$\int_{-\infty}^{z}\frac{1}{\sqrt{2\pi}}exp(\frac{-z^2}{2})du$$
-
-Logit-modellen følger en logistisk regression, mens probit følger en normalfordeling. Fordelen ved disse modeller er, at sandsynligheden i modsætning til LMP er begrænset til intervallet 0-1.
+Logit-modellen følger en logistisk regression, mens probit følger en normalfordeling. Fordelen ved disse modeller er, at sandsynligheden i modsætning til LMP er begrænset til intervallet $[0,1]$.
 
 
 ### (a) - Estimer modellerne.
@@ -127,7 +140,6 @@ t_probit = 0.0231/0.0181
 cat("t-score for logit = ", t_logit)
 cat("t-score for probit = ", t_probit)
 ```
-
 Da t-værdien for både logit- og probit-regressionen er under den kritiske værdi ved et signifikansniveau på 5% kan $H_0$ ikke forkastes, hvorfor estimatet i begge tilfælde ikke er statistisk signifikant.
 
 ```{r}
@@ -156,11 +168,9 @@ p_logit <- pchisq(lr_logit, df=2, lower.tail = F)
 cat("LR = ", as.numeric(lr_logit))
 cat("P-værdi = ", as.numeric(p_logit))
 ```
-
 Da p-værdien er under de normale signifikansniveauer på 5% og 1% forkastes nulhypotesen, hvorfor alder i denne regression er statistisk forskellig fra nul.
 
 Nedenfor laves samme test for probit-modellen.
-
 ```{r}
 probitR = glm(participation ~ income + educ + youngkids + oldkids + foreign, family = binomial(link = "probit"), data = data)
 lr_probit = 2*(logLik(probit) - logLik(probitR))
@@ -171,7 +181,6 @@ p_probit <- pchisq(lr_probit, df=2, lower.tail = F)
 cat("LR = ", as.numeric(lr_probit))
 cat("P-værdi = ", as.numeric(p_probit))
 ```
-
 Her findes der igen en meget lav p-værdi. Alder er derfor ligeledes forskellig fra nul i denne model, da nulhypotesen om insignifikans forkastes.
 
 ## Opgave 3 - Vi vil gerne sammenligne den partielle effekt af \textit{income} på tværs af modellerne. Beregn average partial effect (APE) og kommenter på resultaterne.
@@ -185,14 +194,13 @@ Fordi income er en kontinuert variabel benyttes R til at udregne APE.
 ape_logit = logitmfx(logit, data = data, atmean=F, robust = T)
 ape_probit = probitmfx(probit, data = data, atmean=F, robust = T)
 
-screenreg(list(LPM=robust_ols, ape_logit = ape_logit, ape_probit = ape_probit), digits = 4)
+screenreg(list(LPM=robust_ols, "Logit APE" = ape_logit, "Probit APE" = ape_probit), digits = 4)
 ```
 Der ses ikke betydningsfulde forskelle i ovenstående resultater. Dog ses den største forskel på cirka 1 procentpoint ved "foreign".
 
 ## Opgave 4 - Vi vil gerne sammenligne den partielle effekt af \textit{foreign} på tværs af modellerne. Beregn APE og kommenter på resultaterne.
 
-I dette tilfælde er foreign en binær variabel, og derfor udregnes APE manuelt.
-
+I dette tilfælde er foreign en binær variabel, og derfor udregnes APE mere manuelt.
 ```{r, include = F}
 cdata <- cbind(1, as.matrix(data[, c("income", "age", "agesq", "educ", "youngkids", "oldkids",
 "foreign")])) #Matrix med variable
@@ -209,7 +217,6 @@ logit_foreign = mean(plogis(cdata1 %*% lcoef) - plogis(cdata2 %*% lcoef)) #Bruge
 pcoef <- probit$coefficients
 probit_foreign = mean(pnorm(cdata1 %*% pcoef) - pnorm(cdata2 %*% pcoef)) #Bruger pnorm, da probit har en normal distribution
 ```
-
 ```{r}
 foreign_ape = c(model_ols$coefficients[8], logit_foreign, probit_foreign)
 foreign_ape = round(foreign_ape, digits = 4)
@@ -217,19 +224,21 @@ names(foreign_ape) = c("LPM", "Logit", "Probit")
 foreign_ape
 ```
 Da testen i forrige opgave lavet vha. R også antog, at "foreign" var binær er der i estimatet taget højde for dette. Derfor er APE den samme for "foreign" som i forrige opgave i både logit og probit. I ovenstående er LPM blot estimatet fra den almindelige OLS-model. Både logit og probit regressionen estimerer effekten af "foreign" til at være lidt lavere end i LPM. Disse estimater betyder, at hvis man er "foreign", vil sandsynligheden stige med størrelsen angivet ovenfor. Hvis den forrige opgave derimod ikke havde taget højde for, at "foreign" er en binær variabel vil resultatet dog ikke stemme overens. Dette kan ses i nedenstående.
-```{r, echo = F}
+```{r, include = F}
 margins(model = logit, variables = "foreign")
 margins(model = probit, variables = "foreign")
-
+```
+```{r, echo = F}
 cat("APE for logit under kont. = 0.238")
 cat("APE for probit under kont. = 0.241")
 ```
+
 Her ses en APE på henholdsvis 0,238 og 0,241 hvis det antages, at variablen er kontinuert. Da dette ikke er tilfældet vil de forrige estimater være mere retvisende, da der her tages højde for, at variablen er binær.
 
 
 ## Opgave 5 - Hvorfor er APE at foretrække frem for partial effect at the average (PEA)?
 
-APE er at foretrække, da PEA tager den partielle effekt ved gennemsnittet af variablen. Det vil være at kigge på en gennemsnitlig person, hvilket ikke nødvendigvis er realistisk. APE tager den partielle effekt af alle observationer, og tager efterfølgende gennesnit af dette.
+APE er at foretrække, da PEA tager den partielle effekt ved gennemsnittet af variablen. Det vil være at kigge på en gennemsnitlig person, hvilket ikke nødvendigvis er realistisk. Dette gælder især for binære variable, da gennemsnittet vil være et sted mellem nul og et. Det kan dermed siges, at PEA holder alle andre variable fast ved deres gennemsnit og kigger så på effekten af ændringer i den pågældende variabel. APE tager derimod den partielle effekt af alle observationer, og tager efterfølgende gennemsnittet af dette. Det skal dog for begge metoder pointeres, at der er tale om gennemsnitsbetragtning, hvorfor ekstreme værdier i en variabel vil have en anden partiel effekt.
 
 
 ## Opgave 6 - Sammenlign modellernes evne til at prædiktere ved at beregne percent correctly predicted for hver model.
@@ -244,7 +253,6 @@ $$\tilde{y}_i=
 $$
 
 C udgør sandsynligstærsklen for at tildele værdien 1 eller 0. Hvis denne er under 0.5 tildeles værdien 0 - er den over 0.5 tildeles værdien 1.
-
 
 ```{r}
 y <- data["participation"]

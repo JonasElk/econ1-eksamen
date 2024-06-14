@@ -32,7 +32,7 @@ data = read.csv("data3.csv")
 ```
 
 
-# Eksamenssæt 3: Instrumentvariable
+# Eksamenssæt 3
 
 ## Opgave 1 - Estimer modellen vha. OLS og kommenter på resultaterne 
 
@@ -46,44 +46,45 @@ Hvor $y_i$ er den observerede værdi og $\hat{y_i}$ er den estimerede værdi af 
 model = lm(learnings ~ educ + exp + male + ethblack + ethhisp, data)
 summary(model)
 ```
-I ovenstående model ses det hvordan hispanics, som den eneste variabel, er insignifikant med en p-værdi på 33,2\%. De resterende værdier er på 1\% eller lavere. Desuden er p-værdien meget lav, og dermed fortæller F-testen, at variablene er "jointly significant". Da den uafhængige variabel er i logaritmisk form skal alle Afslutningsvist ses det hvordan $R^2$ er relativt lav. 
+I ovenstående model ses det hvordan hispanics, som den eneste variabel, er insignifikant med en p-værdi på 33,2\%. De resterende værdier er på 1\% eller lavere. Desuden er p-værdien meget lav, og dermed fortæller F-testen, at variablene er "jointly significant". Da den uafhængige variabel er i logaritmisk form skal alle variable fortolkes som log-level. Afslutningsvist ses det hvordan $R^2$ er relativt lav. 
 
 ## Opgave 2 - Hvorfor kunne vi være bekymrede for at uddannelse er endogen? 
-Uddannelse vil være endogen, hvis den er korreleret med fejlledet, hvilket skaber en bias. Dette vil være fordi der er en relevant variabel, som er udeladt og derfor indgår i fejlledet. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker uddannelsesniveauet positivt og dermed skaber en bias. Ligeledes kan forældrenes uddannelsesniveau eller antallet af søskende være korreleret med uddannelsesniveauet.
+Uddannelse vil være endogen, hvis den er korreleret med fejlledet, hvilket skaber en bias. Dette kan være fordi der er en relevant variabel, som er udeladt og derfor indgår i fejlledet, hvilket kaldes omitted variable bias. Denne udeladte variabel kunne eksempelvis være "ability", som påvirker både uddannelses- og lønniveauet, hvorfor den vil skabe en bias. Ligeledes kan forældrenes uddannelsesniveau eller antallet af søskende være korreleret med uddannelsesniveauet, men ikke nødvendigvis lønniveauet, hvorfor netop disse bruges som instrumentvariable.
 
 ## Opgave 3 - Er siblings, meduc og feduc brugbare som instrumenter?
-Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korreleret med den udeladte variabel, som i dette tilfælde er "ability", vil de være egnet som instrumenter. Det kan formentlig antages, at forældres uddannelse eller antal søskende ikke har indflydelse på "ability", hvorfor denne betingelse til instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau formentlig delvist korreleret med den pågældendes uddannelse, mens antal søskende ikke i samme grad antages at være korreleret med uddannelsesniveauet. Derfor vil forældres uddannelse formentlig være bedre instrumenter end antal søskende, men det kan ikke udelukkes at begge kan have indflydelse på uddannelsesniveauet.
+Hvis de nævnte variable er korreleret med uddannelse, mens de ikke er korreleret med den udeladte variabel, som i dette tilfælde antages at være "ability", vil de være egnet som instrumenter. 
+$$cov(x,z \neq 0)$$
+$$cov(z,u) = 0$$
+Hvor $z$ er instrumentvariablen eller variablerne. Det kan formentlig antages, at forældres uddannelse eller antal søskende ikke har indflydelse på "ability", hvorfor denne betingelse til instrumentvariablen er opfyldt. Samtidig er forældres uddannelsesniveau formentlig delvist korreleret med den pågældenes uddannelse, mens antal søskende ikke i samme grad antages at være korreleret med uddannelsesniveauet. For at teste hvorvidt de tre variable er egnet som instrumentvariable benyttes den reducerede ligning, som er den endogene variabel regresseret på alle uafhængige variable samt instrumentvariablerne. Herefter laves en F-test for at undersøge, om de tre instrumentvariable i fællesskab er signifikant for den endogene variabel.
+```{r}
+red_model = lm(educ ~ exp + male + ethblack + ethhisp + siblings + meduc + feduc, data)
+
+summary(red_model)
+linearHypothesis(red_model, c("siblings=0", "meduc=0", "feduc=0"))
+```
+Eftersom testen viser en høj F-score og tilhørende lav p-værdi afvises nulhypotesen om insignifikans. Det ses ligeledes at de tre instrumentvariable er signifikante hver for sig. De tre instrumentvariable er derfor korreleret med den endogene variabel. Hvorvidt antagelsen om ingen korrelation mellem instrumentvariablen og fejlleddet overholdes er en teoretisk diskussion og kan ikke direkte testes.
 
 ## Opgave 4 - Test om uddannelse er endogen
-Testen for endogenitet laves vha. den reducerede ligning, givet ved variablen mistænkt for endogenitetsproblemer regresseret på de øvrige uafhængige variable og instrumentvariablene. Heri er variablen eksogen, altså ukorreleret med det oprindelige fejlled ($u$), hvis fejlleddet fra den reducerede ligning ($v$) er ukorreleret med ($u$). Fejlleddet fra den reducerede ligning er dog ikke observeret, hvorfor residualet ($\hat{v}$) bruges som proxy. Derfor inkluderes ($\hat{v}$) i den oprindelige regression, hvorefter en t-test bruges til at teste, hvorvidt den tilhørende estimator $\delta$ er signifikant forskellig fra nul. Hvis det findes, at $\delta$ ikke kan siges at være lig 0 er den mistænkte variabel endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen $H_0: \gamma = 0$ ikke kan afvises.
+Testen for endogenitet laves vha. den reducerede ligning, givet ved variablen mistænkt for endogenitetsproblemer regresseret på de øvrige uafhængige variable og instrumentvariablene. Heri er variablen eksogen, altså ukorreleret med det oprindelige fejlled ($u$), hvis fejlleddet fra den reducerede ligning ($v$) er ukorreleret med ($u$). Fejlleddet fra den reducerede ligning er dog ikke observeret, hvorfor residualet ($\hat{v}$) bruges som proxy. Derfor inkluderes ($\hat{v}$) i den oprindelige regression, hvorefter en t-test bruges til at teste, hvorvidt den tilhørende estimator $\delta$ er signifikant forskellig fra nul. Hvis det findes, at $\delta$ ikke kan siges at være lig 0 er den mistænkte variabel endogen. Modsat vil variablen antages at være eksogen hvis nulhypotesen $H_0: \delta = 0$ ikke kan afvises.
 ```{r}
-#Reduced form equation
-red_model = lm(educ ~ exp + male + ethblack + ethhisp + siblings + meduc + feduc, data)
+#Res fra reduced form equation
 v = resid(red_model)
 
 #Test for endogenitet, hvor residualer fra ovenstående RFE er med. Signifkans af denne vil betyde endogenitet, tror jeg?
 endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
 summary(endo_model)
 ```
-I ovenstående inkluderes meduc, feduc og siblings som instrumentvariable for educ. Det ses at V (fejleddet) er insignifikant, hvilket indikerer, at educ ikke lider af endogenitet. 
+I ovenstående inkluderes meduc, feduc og siblings som instrumentvariable for educ. Det ses at $v$ (fejlleddet) er insignifikant, hvilket indikerer, at educ ikke lider af endogenitet ved valg af disse instrumentvariable. Dog er p-værdien kun lige over grænsen på 10%, hvorfor det stadig kan opfattes som et tegn på endogenitet.
 
 ## Opgave 5 - Estimer modellen vha. 2SLS hvor du gør brug af de tre beskrevne instrumenter. Sammenlign med resultaterne i spørgsmål 1.
 
-Two stage least square er en metode der anvendes, når OLS giver inkonsistente og skæve estimater. Metoden er næsten det samme som IV, men 2SLS bruges ved mere end én IV til en variabel, hvorfor "fitted values" bruges som IV. 
-For hvert IV laves en hypotesetest hvorvidt de er lig 0, for derefter at estimere den reducerede ligning ved OLS, hvor det er gældende at alle estimaterne og residualerne  $v$ har en covariance på 0. 
-$$y_2=\pi_0+\pi_1x_1+\pi_2z_1+\pi_3z_2+v$$
+Two stage least square er en metode der anvendes, når OLS giver inkonsistente og biased estimater. Metoden 2SLS bruges ved mere end én IV til en variabel, hvorfor "fitted values" fra den reducerede ligning bruges som instrumentvariabel.
+$$y_2=\pi_0+\pi_1x_1+\pi_2z_1+\pi_3z_2+\pi_4z_3+v$$
+$\pi$ er her koefficienten for de uafhængige variable, mens de resterende er for instrumentvariablene, $z_j$.
 Fra den reducerede ligning fremgår relationen mellem originale og "fitted" værdier, hvorfra de "fitted" værdier kan substitueres ind i den originale model.
 
 ```{r}
 educ_fitted = fitted(red_model)
-
-linearHypothesis(red_model, c("meduc=0", "feduc=0", "siblings=0")) #Test at IVs er signifikante
-```
-
-Ovenstående test har til formål at belyse hvorvidt instrumentvariablene er relevante for den endogene variable i den oprindelige model. Der er her tale om en f-test. Nulhypotesen afvises grundet den lave p-værdi, og dermed kan det konkluderes, at mindst en af instrumentvariablene er signifikant, og dermed relevant for modellen. 
-
-```{r}
-
 sls = lm(learnings ~ educ_fitted + exp + male + ethblack + ethhisp, data)
 #summary(sls)
 screenreg(list(OLS = model, two_SLS = sls), digits = 4)
@@ -93,30 +94,31 @@ screenreg(list(OLS = model, two_SLS = sls), digits = 4)
 #summary(sls_r)
 ```
 
-I ovenstående model ses det, at "ethblack" samt intercept ikke længere er signifikant ved 2SLS. Desuden ses der en ændring i $R^2$, hvor denne har størst værdi for OlS. De forskellige værdier ved henholdsvist "educ" og "educ_fitted" antyder, at modellen ved OLS estimationen har været negativ bias, og at der her har været endogenitetsproblemer.
-Dette belyser, hvordan det at inkludere de tre instrumentvariable meduc, feduc og siblings forbedre modellen betydeligt, da denne tager højde for potentielle endogenitet problemer. 
+I ovenstående model ses det, at "ethblack" samt intercept ikke længere er signifikant ved 2SLS. Værdien for $R^2$ kan ikke direkte sammenlignes, da 2SLS ikke har samme intuitive fortolkning heraf. De forskellige værdier ved henholdsvis "educ" og "educ_fitted" antyder, at modellen ved OLS estimationen har haft en negativ bias, og at der her har været endogenitetsproblemer.
+Dette belyser, hvordan det at inkludere de tre instrumentvariable meduc, feduc og siblings forbedre modellen, da denne tager højde for potentielle endogenitetsproblemer. 
 
 ## Opgave 6 - Udfør overidentifikationstestet. Hvad konkluderer du?
 
-Overidentifikationstest udføres hvis man har flere instrumentale variable end endogene variable. I opgave 5 anvendes 3 instrumentale variable til den endogene variabel educ, hvorfor man bør teste for om de tre IV'er overhovedet har indflydelse på educ, og om de i så fald er statistisk ens. 
-For at teste for overidentifikation anvendes residualerne fra 2SLS i opgave 5. Residualerne regreres herefter på alle exogene variable, inklusiv instrumenterne, hvorfra man kan få $R^2_1$. 
-Herefter opstilles hypotesen, at alle IV'er gyldige: $H_0: corr(IV,u)=0 $ Ved at anvende $nR^2_1 \sim \chi^2_q$, hvor q er antallet af instrumentale variable fra udenfor modellen minus antallet det totale antal af endogene forklarende variable. 
+Overidentifikationstest udføres hvis man har flere instrumentale variable end endogene variable. I opgave 5 anvendes 3 instrumentale variable til den endogene variabel $educ$, hvorfor man bør teste om de tre IV'er overhovedet har indflydelse på educ, og om de i så fald er statistisk ens. 
+For at teste for overidentifikation anvendes residualerne fra 2SLS i opgave 5. Residualerne regresseres herefter på alle eksogene variable, inklusiv instrumenterne, hvorfra man kan få $R^2_1$. 
+Herefter opstilles hypotesen, at alle IV'er gyldige: $H_0: corr(IV,u)=0 $ Ved at anvende $nR^2_1 \sim \chi^2_q$, hvor q er antallet af instrumentvariable fra modellen minus antallet det totale antal af endogene forklarende variable. 
 Hvis nulhypotesen ikke kan afvises, er overidentifikationstesten bestået. Det vil betyde at alle instrumenterne er gyldige og modellen er præcist identificeret. Afvises $H_0$ på noget som helst signifikansniveau, da vil minimum 1 af IV'erne have endogenitetsproblemer. 
 
 ```{r}
 sls_r = ivreg(learnings ~ educ + exp + male + ethblack + ethhisp | meduc + feduc + siblings + exp + male + ethblack + ethhisp, data = data)
 res_2sls=resid(sls_r)
+res = resid(sls)
 
 res.aux <- lm(res_2sls ~ meduc + feduc + siblings + exp + male + ethblack + ethhisp, data=data)
 
 r2 <- summary(res.aux)$r.squared
 n <- nobs(res.aux)
 teststat <- n*r2
-pval <- 1-pchisq(teststat,1)
+pval <- 1-pchisq(teststat, 2)
 pval
 ```
+Ud fra ovenstående værdi, kan det konluderes, at nulhypotesen kan afvises ved et signifikansniveau på 5%, og derfor at modellen er overidenticieret. Dermed er nogle af instrumentvariablene ikke eksogene, hvilket betyder, at ikke alle instrumentvariablene er ukorreleret med fejlleddet og modellen er dermed overidentificeret. 
 
-Ud fra ovenstående værdi, kan det konluderes, at nulhypotesen kan afvises, og derfor at modellen er overidenticieret.
 
 ## Opgave 7 - Udfør hele analysen igen hvor du kun bruger meduc og feduc som instrumenter. Ændrer det på dine konklusioner?
 
@@ -130,15 +132,14 @@ v = resid(red_model)
 endo_model = lm(learnings ~ educ + exp + male + ethblack + ethhisp + v, data)
 summary(endo_model)
 ```
-Ud fra ovenstående model, kan det ses at residualerne er signifikante, hvilket nødvendigvis må betyde at der er endgonitet. 
+Ud fra ovenstående model, kan det ses at residualerne er signifikante, hvilket er tegn på, at der er endogenitet. 
 
 ```{r}
 educ_fitted = fitted(red_model)
 
 linearHypothesis(red_model, c("meduc=0", "feduc=0")) #Test at IVs er signifikante
 ```
-
-Grundet den meget lave p-værdi, kan nulhypotesen forkastes. 
+Grundet den meget lave p-værdi, kan nulhypotesen forkastes, hvorfor instrumentvariablene er egnet, under antagelse af, at de ikke er korreleret med fejlleddet. 
 
 ```{r}
 sls2 = lm(learnings ~ educ_fitted + exp + male + ethblack + ethhisp, data)
@@ -155,3 +156,18 @@ screenreg(list(OLS = model, "Tre IVs" = sls, "To IVs" = sls2), digits = 4)
 Sammenligningen mellem "OLS" og "tre IVs" kan findes i opgave 4. Der ses ikke den store forskel mellem to og tre IVs, dog ses der et lille fald i variablene - med undtagelse af "experience".
 
 
+Nedenfor laves igen en overidentifikationstest, hvor der nu kun inkluderes de to instrumentvariable.
+```{r}
+sls_r = ivreg(learnings ~ educ + exp + male + ethblack + ethhisp | meduc + feduc + exp + male + ethblack + ethhisp, data = data)
+res_2sls=resid(sls_r)
+res = resid(sls)
+
+res.aux <- lm(res_2sls ~ meduc + feduc + exp + male + ethblack + ethhisp, data=data)
+
+r2 <- summary(res.aux)$r.squared
+n <- nobs(res.aux)
+teststat <- n*r2
+pval <- 1-pchisq(teststat, 1) #kun 1 df, da der er 2 IVs og 1 endogen
+pval
+```
+Der er igen tegn på overidentifikation, eftersom p-værdien er under 5%. Dermed afvises nulhypotesen om, at alle instrumentvariable er ukorreleret med fejlleddet.
